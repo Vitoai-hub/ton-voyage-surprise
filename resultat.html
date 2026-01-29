@@ -138,6 +138,17 @@
   </div>
 </div>
 
+  // Affichage progressif des questions selon le contrôle
+if (controle === 1) {
+  document.querySelectorAll(".q").forEach(q => q.style.display = "block");
+}
+if (controle === 2) {
+  document.querySelectorAll(".q-c2, .q-c3").forEach(q => q.style.display = "block");
+}
+if (controle === 3) {
+  document.querySelectorAll(".q-c3").forEach(q => q.style.display = "block");
+}
+
 
 <script>
   // Récupération du code
