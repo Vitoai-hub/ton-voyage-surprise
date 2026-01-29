@@ -118,3 +118,13 @@ select option {
   color: #111;
   background: #fff;
 }
+.q{
+  margin-top: 14px;
+}
+
+.q label{
+  display:block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
