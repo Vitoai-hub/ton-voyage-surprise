@@ -1,4 +1,4 @@
-const DATA_VOYAGE = {
+window.DATA_VOYAGE = {
   meta: {
     startDateLabel: "11 septembre",
     intensityLevels: 4,
