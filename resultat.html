@@ -59,12 +59,18 @@
     }
     .choices label { color: #111; }
     input[type="checkbox"] { accent-color: #111; }
+    /* Fix visibilité (ton style.css global met probablement le texte en blanc) */
+    body { color: #111; }
+
+    .section, .section * { 
+      color: #111 !important;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- INTRO / MESSAGE -->
+  <!-- RO / MESSAGE -->
   <div id="intro" class="section"></div>
 
   <!-- QUESTIONS -->
