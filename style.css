@@ -181,3 +181,26 @@ button:disabled{
     grid-template-columns: 1fr;
   }
 }
+/* ===== Thème clair uniquement pour resultat.html ===== */
+body.light{
+  background: #f7f7f7;
+  color: #111;
+  padding: 20px; /* override padding global */
+}
+
+body.light .section{
+  background: #fff;
+  color: #111;
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+body.light .section *{
+  color: inherit;
+}
+
+body.light button{
+  background: #111;
+  border: 1px solid #111;
+  color: #fff;
+}
