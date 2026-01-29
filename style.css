@@ -113,3 +113,8 @@ button:hover{
   h1{ font-size: 28px; }
   .grid{ grid-template-columns: 1fr; }
 }
+/* Fix visibilité des options dans les listes déroulantes */
+select option {
+  color: #111;
+  background: #fff;
+}
