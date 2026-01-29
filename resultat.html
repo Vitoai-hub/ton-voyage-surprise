@@ -24,9 +24,10 @@
       margin: 0 0 10px;
     }
     .loader-sub{
-      margin: 0 0 16px;
+      margin: 0 0 14px;
       color: rgba(255,255,255,0.65);
       font-size: 13px;
+      min-height: 18px;
     }
     .loader-bar{
       height: 12px;
@@ -59,16 +60,33 @@
       100%{ content:""; }
     }
 
+    /* Petit flash final "waouh" */
+    .flash{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(700px 500px at 50% 35%, rgba(154,215,255,0.22), transparent 55%);
+      opacity: 0;
+    }
+    .flash.on{
+      animation: flash 260ms ease both;
+    }
+    @keyframes flash{
+      0%{ opacity: 0; }
+      40%{ opacity: 1; }
+      100%{ opacity: 0; }
+    }
+
     /* --- Modules (affichage conditionnel) --- */
     .module{ display:none; }
     .module.active{ display:block; }
 
-    /* Petit + : apparition douce des modules */
+    /* Apparition douce des modules */
     .module.active{
-      animation: fadeUp 220ms ease both;
+      animation: fadeUp 240ms ease both;
     }
     @keyframes fadeUp{
-      from{ opacity:0; transform: translateY(6px); }
+      from{ opacity:0; transform: translateY(8px); }
       to{ opacity:1; transform: translateY(0); }
     }
   </style>
@@ -81,9 +99,11 @@
   <!-- Animation fabrication -->
   <div id="loader" class="loader-wrap">
     <p class="loader-title">Fabrication du voyage<span class="loader-dots"></span></p>
-    <p class="loader-sub">Assemblage des choix • Ajustement des surprises • Vérification du rythme</p>
+    <p id="loaderMsg" class="loader-sub">Initialisation…</p>
     <div class="loader-bar"><div id="loaderFill" class="loader-fill"></div></div>
   </div>
+
+  <div id="flash" class="flash"></div>
 
   <!-- SUSPENSE TOTAL -->
   <div id="suspense" class="module">
@@ -153,38 +173,26 @@
   <!-- QUESTIONS (contrôle 1 à 3) -->
   <div id="questions" class="module">
     <h2>🧭</h2>
-    <p>
-      Quelques choix, et j’ajuste les détails pour toi.
-    </p>
+    <p>Quelques choix, et j’ajuste les détails pour toi.</p>
 
-    <!-- Tu peux remplacer/adapter ces questions ensuite -->
     <div class="q q-c2">
       <label>1</label>
       <select>
-        <option>—</option>
-        <option>A</option>
-        <option>B</option>
-        <option>C</option>
+        <option>—</option><option>A</option><option>B</option><option>C</option>
       </select>
     </div>
 
     <div class="q q-c3">
       <label>2</label>
       <select>
-        <option>—</option>
-        <option>A</option>
-        <option>B</option>
-        <option>C</option>
+        <option>—</option><option>A</option><option>B</option><option>C</option>
       </select>
     </div>
 
     <div class="q q-c1">
       <label>3</label>
       <select>
-        <option>—</option>
-        <option>A</option>
-        <option>B</option>
-        <option>C</option>
+        <option>—</option><option>A</option><option>B</option><option>C</option>
       </select>
     </div>
   </div>
@@ -205,9 +213,7 @@
     }
 
     const data = parseCode(code);
-    if (!data){
-      alert("Code invalide.");
-    }
+    if (!data) alert("Code invalide.");
 
     // --- Pré-cache questions (elles seront activées selon contrôle) ---
     document.querySelectorAll(".q").forEach(q => q.style.display = "none");
@@ -226,7 +232,6 @@
       if (controle <= 3) {
         document.getElementById("questions").classList.add("active");
 
-        // Affichage progressif des questions selon le contrôle
         if (controle === 1) {
           document.querySelectorAll(".q").forEach(q => q.style.display = "block");
         } else if (controle === 2) {
@@ -258,27 +263,48 @@
       }
     }
 
-    // --- Animation fabrication + révélation ---
+    // --- Animation fabrication + messages "waouh" ---
     const loader = document.getElementById("loader");
     const fill = document.getElementById("loaderFill");
+    const msg = document.getElementById("loaderMsg");
+    const flash = document.getElementById("flash");
 
-    // Durée totale de l'animation (ms)
-    const totalMs = 1500;
+    const steps = [
+      { p: 0.12, t: "Lecture du code…" },
+      { p: 0.28, t: "Sélection des ambiances…" },
+      { p: 0.45, t: "Ajustement du rythme…" },
+      { p: 0.62, t: "Calibration des surprises…" },
+      { p: 0.78, t: "Assemblage des étapes…" },
+      { p: 0.92, t: "Dernière vérification…" }
+    ];
+
+    const totalMs = 1700;
     const start = performance.now();
+    let stepIndex = 0;
 
     function tick(now){
       const t = Math.min(1, (now - start) / totalMs);
       fill.style.width = `${Math.round(t * 100)}%`;
 
+      // Mise à jour message en fonction du pourcentage
+      while (stepIndex < steps.length && t >= steps[stepIndex].p){
+        msg.textContent = steps[stepIndex].t;
+        stepIndex++;
+      }
+
       if (t < 1){
         requestAnimationFrame(tick);
       } else {
-        // Fin : on masque l'animation et on affiche les modules
-        loader.style.display = "none";
-        applyTruthTable();
+        // Flash waouh final + révélation
+        flash.classList.add("on");
+        setTimeout(() => {
+          loader.style.display = "none";
+          applyTruthTable();
+        }, 140);
       }
     }
 
+    msg.textContent = "Initialisation…";
     requestAnimationFrame(tick);
   </script>
 
