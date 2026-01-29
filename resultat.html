@@ -68,7 +68,28 @@
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+.nextRow{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:10px;
+}
 
+.nextBtn{
+  background: transparent !important;
+  border: 1px solid rgba(0,0,0,.2) !important;
+  color: rgba(0,0,0,.65) !important;
+  border-radius: 999px !important;
+  padding: 6px 12px !important;
+  font-size: 13px !important;
+  cursor: pointer;
+  width: auto !important;
+  max-width: none !important;
+}
+
+.nextBtn:hover{
+  border-color: rgba(0,0,0,.35) !important;
+  color: rgba(0,0,0,.85) !important;
+}
   </style>
 </head>
 
@@ -87,9 +108,11 @@
   <p id="activitiesCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
   <p id="activitiesHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
   <div id="activities" class="choices"></div>
-</div>
-
-    <hr style="margin:18px 0; opacity:.2">
+  </div>
+  <hr style="margin:18px 0; opacity:.2">
+    <div class="nextRow">
+    <button type="button" class="nextBtn" id="nextActivities">Suivant</button>
+    </div>
 
     <!-- PAYS -->
     <div class="step" id="stepCountries">
@@ -98,9 +121,11 @@
   <p id="countriesCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
   <p id="countriesHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
   <div id="countries" class="choices"></div>
-</div>
-    
+  </div>
     <hr style="margin:18px 0; opacity:.2">
+    <div class="nextRow">
+    <button type="button" class="nextBtn" id="nextActivities">Suivant</button>
+    </div>
 
     <!-- INSOLITE -->
     <div class="step" id="stepInsolite">
@@ -119,6 +144,9 @@
     <p id="citiesHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
     <div id="cities" class="choices"></div>
   </div>
+      <div class="nextRow">
+    <button type="button" class="nextBtn" id="nextActivities">Suivant</button>
+    </div>
 
   <div class="step" id="stepTransport">
     <hr style="margin:18px 0; opacity:.2">
@@ -127,6 +155,9 @@
     <p id="transportHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
     <div id="transport" class="choices"></div>
   </div>
+      <div class="nextRow">
+    <button type="button" class="nextBtn" id="nextActivities">Suivant</button>
+    </div>
 </div>
 
 
