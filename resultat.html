@@ -277,7 +277,7 @@
       intro.classList.remove("hidden");
       intro.innerHTML = `
         <h1>On construit ton voyage</h1>
-        <p>Un séjour de ${duree} jours à partir du ${startDate}.</p>
+        <p>Un séjour de ${duree} jour${duree > 1 ? "s" : ""} à partir du ${startDate}.</p>
       `;
       questions.classList.remove("hidden");
     }
