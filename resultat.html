@@ -132,9 +132,28 @@
     const intro = document.getElementById("intro");
     const questions = document.getElementById("questions");
 
-    function computeEndDate() {
-      return `du ${startDate} au ${11 + duree - 1} septembre`;
-    }
+    function computeTripEndDayFromPaidDays(d) {
+  // Hypothèse fixe : départ vendredi 11/09/2026 soir.
+  // Jours posés = jours ouvrés (lun..ven) à partir de lundi 14/09/2026.
+  const firstWorkMonday = 14; // septembre 2026
+  const d0 = d - 1;
+
+  const week = Math.floor(d0 / 5); // semaines de travail complètes
+  const pos = d0 % 5;              // 0..4 (lun..ven)
+
+  const lastPaidDay = firstWorkMonday + week * 7 + pos; // date (septembre)
+
+  // Si dernier jour posé = vendredi, on ajoute week-end bonus (sam+dim)
+  const endDay = (pos === 4) ? (lastPaidDay + 2) : lastPaidDay;
+
+  return endDay;
+}
+
+function computeEndDate() {
+  const endDay = computeTripEndDayFromPaidDays(duree);
+  return `du 11 septembre au ${endDay} septembre`;
+}
+
 
     if (controle === "A") {
       intro.innerHTML = `
@@ -264,24 +283,3 @@
 
 </body>
 </html>
-function computeTripEndDayFromPaidDays(d) {
-  // Hypothèse fixe : départ vendredi 11/09/2026 soir.
-  // Jours posés = jours ouvrés (lun..ven) à partir de lundi 14/09/2026.
-  const firstWorkMonday = 14; // septembre 2026
-  const d0 = d - 1;
-
-  const week = Math.floor(d0 / 5); // semaines de travail complètes
-  const pos = d0 % 5;              // 0..4 (lun..ven)
-
-  const lastPaidDay = firstWorkMonday + week * 7 + pos; // date (septembre)
-
-  // Si le dernier jour posé est un vendredi (pos=4), on ajoute le week-end bonus -> dimanche (+2)
-  const endDay = (pos === 4) ? (lastPaidDay + 2) : lastPaidDay;
-
-  return endDay;
-}
-
-function computeEndDate() {
-  const endDay = computeTripEndDayFromPaidDays(duree);
-  return `du 11 septembre au ${endDay} septembre`;
-}
