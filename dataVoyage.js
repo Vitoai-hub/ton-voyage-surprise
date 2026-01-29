@@ -1,5 +1,4 @@
 const DATA_VOYAGE = {
-  {
   "meta": {
     "startDateLabel": "11 septembre",
     "intensityLevels": 4,
@@ -188,5 +187,3 @@ const DATA_VOYAGE = {
     "Château emblématique"
   ]
 }
-
-};
