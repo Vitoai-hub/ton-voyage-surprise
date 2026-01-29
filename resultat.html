@@ -4,199 +4,283 @@
   <meta charset="UTF-8">
   <title>Ton voyage – Résultat</title>
   <link rel="stylesheet" href="style.css">
+
   <style>
-    .module{ display:none; }
-    .module.active{ display:block; }
-    .module{
+    /* --- Animation "fabrication" --- */
+    .loader-wrap{
       max-width: 980px;
       margin: 18px auto;
-      padding: 18px;
-      border-radius: 18px;
+      padding: 22px;
+      border-radius: 20px;
       border: 1px solid rgba(255,255,255,0.12);
       background: rgba(255,255,255,0.06);
       box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+      text-align: center;
     }
-    .module h2{ margin-top:0; }
+    .loader-title{
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      margin: 0 0 10px;
+    }
+    .loader-sub{
+      margin: 0 0 16px;
+      color: rgba(255,255,255,0.65);
+      font-size: 13px;
+    }
+    .loader-bar{
+      height: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      overflow: hidden;
+      position: relative;
+    }
+    .loader-fill{
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(154,215,255,0.55), rgba(255,255,255,0.10));
+      box-shadow: 0 0 18px rgba(154,215,255,0.22);
+      transition: width 120ms ease;
+    }
+    .loader-dots::after{
+      content: "";
+      display: inline-block;
+      width: 18px;
+      text-align: left;
+      animation: dots 1.2s infinite steps(4, end);
+    }
+    @keyframes dots{
+      0%{ content:""; }
+      25%{ content:"."; }
+      50%{ content:".."; }
+      75%{ content:"..."; }
+      100%{ content:""; }
+    }
+
+    /* --- Modules (affichage conditionnel) --- */
+    .module{ display:none; }
+    .module.active{ display:block; }
+
+    /* Petit + : apparition douce des modules */
+    .module.active{
+      animation: fadeUp 220ms ease both;
+    }
+    @keyframes fadeUp{
+      from{ opacity:0; transform: translateY(6px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
   </style>
 </head>
 
 <body>
 
-<h1>Ton voyage prend forme</h1>
-document.querySelectorAll(".q").forEach(q => q.style.display = "none");
+  <h1>Ton voyage prend forme</h1>
 
-<!-- SUSPENSE TOTAL -->
-<div id="suspense" class="module">
-  <h2>🌑 Surprise totale</h2>
-  <p>
-    Ce voyage existe déjà.  
-    Il a été pensé, préparé, ajusté.  
-    Tu n’as rien à décider.
-  </p>
-  <p><i>Il se révélera au bon moment.</i></p>
-</div>
-
-<!-- VISION GLOBALE -->
-<div id="vision" class="module">
-  <h2>🌍 L’esprit du voyage</h2>
-  <p>
-    Un itinéraire en Europe centrale et sud-est,  
-    mêlant villes inspirantes, nature forte  
-    et moments pour souffler ensemble.
-  </p>
-</div>
-
-<!-- DURÉE -->
-<div id="duree_longue" class="module">
-  <h2>🕒 Durée – grande version</h2>
-  <p>
-    Avec ce nombre de jours posés,  
-    le voyage peut se déployer sans contrainte :  
-    transitions douces, journées off, respiration.
-  </p>
-</div>
-
-<div id="duree_courte" class="module">
-  <h2>🕒 Durée – version condensée</h2>
-  <p>
-    Le voyage va à l’essentiel,  
-    sans perdre son sens ni son équilibre.
-  </p>
-</div>
-
-<!-- AVENTURE -->
-<div id="aventure_forte" class="module">
-  <h2>⛰️ Aventure marquante</h2>
-  <p>
-    Une expérience forte est intégrée au voyage :  
-    immersion nature, effort choisi, souvenirs puissants.
-  </p>
-</div>
-
-<div id="aventure_douce" class="module">
-  <h2>🌿 Aventure douce</h2>
-  <p>
-    La nature est présente, accessible,  
-    sans pression ni contrainte.
-  </p>
-</div>
-
-<!-- CONFORT -->
-<div id="confort_soigne" class="module">
-  <h2>🛏️ Confort soigné</h2>
-  <p>
-    Les logements ont été choisis pour leur charme,  
-    leur emplacement et les moments cocooning.
-  </p>
-</div>
-
-<div id="confort_essentiel" class="module">
-  <h2>🎒 Confort essentiel</h2>
-  <p>
-    Simple, fonctionnel, pratique,  
-    pour privilégier l’expérience.
-  </p>
-</div>
-
-<!-- QUESTIONS (contrôle 1 à 3) -->
-<div id="questions" class="module">
-  <h2>🧭 Construisons-le ensemble</h2>
-
-  <div class="q q-c2">
-    <label>Ce qui te fait le plus envie :</label>
-    <select>
-      <option>Villes inspirantes</option>
-      <option>Nature & paysages</option>
-      <option>Un équilibre des deux</option>
-    </select>
+  <!-- Animation fabrication -->
+  <div id="loader" class="loader-wrap">
+    <p class="loader-title">Fabrication du voyage<span class="loader-dots"></span></p>
+    <p class="loader-sub">Assemblage des choix • Ajustement des surprises • Vérification du rythme</p>
+    <div class="loader-bar"><div id="loaderFill" class="loader-fill"></div></div>
   </div>
 
-  <div class="q q-c3">
-    <label>Le rythme idéal :</label>
-    <select>
-      <option>Plutôt tranquille</option>
-      <option>Bien rempli mais respirable</option>
-      <option>Intense et immersif</option>
-    </select>
+  <!-- SUSPENSE TOTAL -->
+  <div id="suspense" class="module">
+    <h2>🌑</h2>
+    <p>
+      Tout est prêt. <br>
+      Tu n’as rien à décider.
+    </p>
+    <p><i>Il se révélera au bon moment.</i></p>
   </div>
 
-  <div class="q q-c3">
-    <label>Ta relation à la surprise :</label>
-    <select>
-      <option>J’aime ne pas savoir</option>
-      <option>Quelques repères me rassurent</option>
-      <option>J’aime comprendre ce que je vis</option>
-    </select>
+  <!-- VISION GLOBALE -->
+  <div id="vision" class="module">
+    <h2>🌍</h2>
+    <p>
+      Europe centrale et sud-est. <br>
+      Un équilibre : villes, nature, respiration.
+    </p>
   </div>
 
-  <div class="q q-c1">
-    <label>Y a-t-il quelque chose que tu préfères éviter ?</label>
-    <select>
-      <option>Aucune contrainte</option>
-      <option>Trop de transports</option>
-      <option>Un rythme trop sportif</option>
-    </select>
+  <!-- DURÉE -->
+  <div id="duree_longue" class="module">
+    <h2>🕒</h2>
+    <p>
+      Version longue : le voyage respire. <br>
+      Transitions douces, journées OFF possibles.
+    </p>
   </div>
-</div>
 
-  // Affichage progressif des questions selon le contrôle
-if (controle === 1) {
-  document.querySelectorAll(".q").forEach(q => q.style.display = "block");
-}
-if (controle === 2) {
-  document.querySelectorAll(".q-c2, .q-c3").forEach(q => q.style.display = "block");
-}
-if (controle === 3) {
-  document.querySelectorAll(".q-c3").forEach(q => q.style.display = "block");
-}
+  <div id="duree_courte" class="module">
+    <h2>🕒</h2>
+    <p>
+      Version condensée : l’essentiel, sans compromis.
+    </p>
+  </div>
 
+  <!-- AVENTURE -->
+  <div id="aventure_forte" class="module">
+    <h2>⛰️</h2>
+    <p>
+      Expérience nature forte intégrée : immersion + “waouh”.
+    </p>
+  </div>
 
-<script>
-  // Récupération du code
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get("code");
+  <div id="aventure_douce" class="module">
+    <h2>🌿</h2>
+    <p>
+      Nature accessible : beau, simple, sans pression.
+    </p>
+  </div>
 
-  if (!code || code.length !== 4) {
-    alert("Code invalide.");
-  }
+  <!-- CONFORT -->
+  <div id="confort_soigne" class="module">
+    <h2>🛏️</h2>
+    <p>
+      Confort soigné : charme, emplacement, moments cocooning.
+    </p>
+  </div>
 
-  const duree = parseInt(code[0]);
-  const controle = parseInt(code[1]);
-  const aventure = parseInt(code[2]);
-  const confort = parseInt(code[3]);
+  <div id="confort_essentiel" class="module">
+    <h2>🎒</h2>
+    <p>
+      Confort essentiel : pratique, fonctionnel, efficace.
+    </p>
+  </div>
 
-  // Contrôle
-  if (controle === 5) {
-    document.getElementById("suspense").classList.add("active");
-  } else {
-    document.getElementById("vision").classList.add("active");
-  }
+  <!-- QUESTIONS (contrôle 1 à 3) -->
+  <div id="questions" class="module">
+    <h2>🧭</h2>
+    <p>
+      Quelques choix, et j’ajuste les détails pour toi.
+    </p>
 
-  if (controle <= 3) {
-    document.getElementById("questions").classList.add("active");
-  }
+    <!-- Tu peux remplacer/adapter ces questions ensuite -->
+    <div class="q q-c2">
+      <label>1</label>
+      <select>
+        <option>—</option>
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+      </select>
+    </div>
 
-  // Durée
-  if (duree >= 8) {
-    document.getElementById("duree_longue").classList.add("active");
-  } else {
-    document.getElementById("duree_courte").classList.add("active");
-  }
+    <div class="q q-c3">
+      <label>2</label>
+      <select>
+        <option>—</option>
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+      </select>
+    </div>
 
-  // Aventure
-  if (aventure >= 3) {
-    document.getElementById("aventure_forte").classList.add("active");
-  } else {
-    document.getElementById("aventure_douce").classList.add("active");
-  }
+    <div class="q q-c1">
+      <label>3</label>
+      <select>
+        <option>—</option>
+        <option>A</option>
+        <option>B</option>
+        <option>C</option>
+      </select>
+    </div>
+  </div>
 
-  // Confort
-  if (confort === 3) {
-    document.getElementById("confort_soigne").classList.add("active");
-  } else {
-    document.getElementById("confort_essentiel").classList.add("active");
-  }
-</script>
+  <script>
+    // --- Récupération code ---
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+
+    function parseCode(codeStr){
+      if (!codeStr || codeStr.length !== 4) return null;
+      const d = parseInt(codeStr[0], 10);
+      const c = parseInt(codeStr[1], 10);
+      const a = parseInt(codeStr[2], 10);
+      const k = parseInt(codeStr[3], 10);
+      if ([d,c,a,k].some(n => Number.isNaN(n))) return null;
+      return { duree:d, controle:c, aventure:a, confort:k };
+    }
+
+    const data = parseCode(code);
+    if (!data){
+      alert("Code invalide.");
+    }
+
+    // --- Pré-cache questions (elles seront activées selon contrôle) ---
+    document.querySelectorAll(".q").forEach(q => q.style.display = "none");
+
+    function applyTruthTable(){
+      const { duree, controle, aventure, confort } = data;
+
+      // Contrôle
+      if (controle === 5) {
+        document.getElementById("suspense").classList.add("active");
+      } else {
+        document.getElementById("vision").classList.add("active");
+      }
+
+      // Questions seulement si contrôle <= 3
+      if (controle <= 3) {
+        document.getElementById("questions").classList.add("active");
+
+        // Affichage progressif des questions selon le contrôle
+        if (controle === 1) {
+          document.querySelectorAll(".q").forEach(q => q.style.display = "block");
+        } else if (controle === 2) {
+          document.querySelectorAll(".q-c2, .q-c3").forEach(q => q.style.display = "block");
+        } else if (controle === 3) {
+          document.querySelectorAll(".q-c3").forEach(q => q.style.display = "block");
+        }
+      }
+
+      // Durée
+      if (duree >= 8) {
+        document.getElementById("duree_longue").classList.add("active");
+      } else {
+        document.getElementById("duree_courte").classList.add("active");
+      }
+
+      // Aventure
+      if (aventure >= 3) {
+        document.getElementById("aventure_forte").classList.add("active");
+      } else {
+        document.getElementById("aventure_douce").classList.add("active");
+      }
+
+      // Confort
+      if (confort === 3) {
+        document.getElementById("confort_soigne").classList.add("active");
+      } else {
+        document.getElementById("confort_essentiel").classList.add("active");
+      }
+    }
+
+    // --- Animation fabrication + révélation ---
+    const loader = document.getElementById("loader");
+    const fill = document.getElementById("loaderFill");
+
+    // Durée totale de l'animation (ms)
+    const totalMs = 1500;
+    const start = performance.now();
+
+    function tick(now){
+      const t = Math.min(1, (now - start) / totalMs);
+      fill.style.width = `${Math.round(t * 100)}%`;
+
+      if (t < 1){
+        requestAnimationFrame(tick);
+      } else {
+        // Fin : on masque l'animation et on affiche les modules
+        loader.style.display = "none";
+        applyTruthTable();
+      }
+    }
+
+    requestAnimationFrame(tick);
+  </script>
 
 </body>
 </html>
