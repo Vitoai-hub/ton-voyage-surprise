@@ -185,11 +185,11 @@ function computeEndDate() {
      ***********************/
     const activitiesDiv = document.getElementById("activities");
 
-    if (!window.DATA_VOYAGE || !DATA_VOYAGE.activities) {
+    if (!window.DATA_VOYAGE || !Array.isArray(DATA_VOYAGE.activities)) {
       activitiesDiv.innerHTML = "<p>Erreur : dataVoyage.js n'est pas chargé.</p>";
       console.error("DATA_VOYAGE introuvable. Vérifie dataVoyage.js et son chemin.");
     } else {
-      DATA_VOYAGE.activities.forEach(act => {
+      window.DATA_VOYAGE.activities.forEach(act => {
         const el = document.createElement("label");
         el.innerHTML = `
           <input type="checkbox" value="${act.id}">
