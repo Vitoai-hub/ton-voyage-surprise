@@ -144,9 +144,11 @@
   const lastPaidDay = firstWorkMonday + week * 7 + pos; // date (septembre)
 
   // Si dernier jour posé = vendredi, on ajoute week-end bonus (sam+dim)
-  const endDay = (pos === 4) ? (lastPaidDay + 2) : lastPaidDay;
-
-  return endDay;
+  return (pos === 4) ? (lastPaidDay + 2) : lastPaidDay;
+ }
+    function computeTripTotalDays(d) {
+      const endDay = computeTripEndDayFromPaidDays(d);
+      return (endDay - 11 + 1);
 }
 
 function computeEndDate() {
@@ -162,9 +164,13 @@ function computeEndDate() {
         <p>Je te garde 100% de surprise… mais tu auras quelques indices d’ici là 😉</p>
       `;
     } else if (controle === "B") {
+      const endDay = computeTripEndDayFromPaidDays(duree);
+      const totalDays = computeTripTotalDays(duree);
+      
       intro.innerHTML = `
         <h1>💛 Confiance</h1>
-        <p>Je te prépare un séjour fantastique de ${duree} jours à partir du ${startDate}.</p>
+        <p><strong>${computeEndDateLabel()}</strong></p>
+        <p>Tu poses <strong>${duree} jours${duree > 1 ? "s" : ""}</strong>, et je te prépare un séjour fantastique de <strong>${totalDays} jours</strong> (week-ends inclus) ✨ à partir du ${startDate}.</p>
       `;
     } else {
       intro.innerHTML = `
