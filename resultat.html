@@ -45,7 +45,7 @@
       font-size: 16px;
       cursor: pointer;
       background: #111;
-      color: #fff;
+      color: #fff !important;
       width: 100%;
       max-width: 520px;
       display: block;
@@ -116,6 +116,30 @@
       if (intensity >= 3 && comfort === 3) return "adventure_comfort";
       return "adventure_pure";
     }
+function getMaxCountriesByDuration(n) {
+  if (n <= 3) return 1;
+  if (n <= 5) return 2;
+  if (n <= 8) return 3;
+  return 4; // 9-10 jours posés => 4 pays max (ça reste “très dense”)
+}
+
+function getMaxCitiesByDuration(n) {
+  if (n <= 3) return 1;
+  if (n <= 5) return 2;
+  if (n <= 8) return 3;
+  return 4;
+}
+
+function getMaxTransportByDuration(n) {
+  if (n <= 5) return 1;
+  if (n <= 8) return 2;
+  return 3;
+}
+
+function getMaxAvoidCountriesByDuration(n) {
+  if (n <= 5) return 2;
+  return 3;
+}
 
     /***********************
      * PARAMÈTRES (depuis index.html via localStorage)
@@ -125,6 +149,31 @@
     const intensity = Number(localStorage.getItem("intensity") || 2); // 1..4
     const comfort   = Number(localStorage.getItem("comfort") || 2);   // 1..3
     const startDate = "11 septembre";
+const CITY_CHOICES = [
+  "Venise", "Milan", "Rome",
+  "Ljubljana", "Bled",
+  "Vienne", "Salzbourg", "Hallstatt",
+  "Prague",
+  "Budapest",
+  "Bratislava",
+  "Zagreb", "Split", "Dubrovnik",
+  "Sarajevo", "Mostar",
+  "Munich", "Berlin"
+];
+
+const TRANSPORT_CHOICES = [
+  { id: "plane", label: "✈️ Avion" },
+  { id: "train", label: "🚆 Train" },
+  { id: "car", label: "🚗 Voiture / road-trip" },
+  { id: "boat", label: "⛵ Bateau" },
+  { id: "bike", label: "🚲 Vélo" }
+];
+
+const PACE_CHOICES = [
+  { id: "slow", label: "😌 Chill : 1 grosse activité max / jour" },
+  { id: "balanced", label: "✨ Équilibré : visite + détente" },
+  { id: "packed", label: "🔥 Dense : on optimise à fond" }
+];
 
     /***********************
      * INTRO
@@ -190,6 +239,15 @@ function computeEndDate() {
       `;
       questions.classList.remove("hidden");
     }
+const blockD = document.getElementById("blockD");
+const blockE = document.getElementById("blockE");
+
+const isC = (controle === "C");
+const isD = (controle === "D");
+const isE = (controle === "E");
+
+if (isD || isE) blockD.classList.remove("hidden");
+if (isE) blockE.classList.remove("hidden");
 
     /***********************
      * ACTIVITÉS (checkbox)
@@ -209,6 +267,282 @@ function computeEndDate() {
         activitiesDiv.appendChild(el);
       });
     }
+<!-- PAYS -->
+<h3>Pays qui te tentent</h3>
+<p id="countriesCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
+<p id="countriesHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
+<div id="countries" class="choices"></div>
+
+<hr style="margin:18px 0; opacity:.2">
+
+<!-- INSOLITE (choix simple) -->
+<h3>Une activité insolite</h3>
+<p style="margin: 6px 0 10px; opacity: 0.8;">Choisis-en une seule 🙂</p>
+<div id="insolite" class="choices"></div>
+
+<!-- Bloc D -->
+<div id="blockD" class="hidden">
+  <hr style="margin:18px 0; opacity:.2">
+
+  <h3>Villes que tu veux absolument voir</h3>
+  <p id="citiesCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
+  <p id="citiesHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
+  <div id="cities" class="choices"></div>
+
+  <hr style="margin:18px 0; opacity:.2">
+
+  <h3>Moyen(s) de transport que tu aimerais emprunter</h3>
+  <p id="transportCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
+  <p id="transportHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
+  <div id="transport" class="choices"></div>
+</div>
+
+<!-- Bloc E -->
+<div id="blockE" class="hidden">
+  <hr style="margin:18px 0; opacity:.2">
+
+  <h3>Pays que tu n’as pas envie de faire pendant CE voyage</h3>
+  <p id="avoidCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
+  <p id="avoidHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
+  <div id="avoidCountries" class="choices"></div>
+
+  <hr style="margin:18px 0; opacity:.2">
+
+  <h3>Ton rythme idéal</h3>
+  <p style="margin: 6px 0 10px; opacity: 0.8;">(Ça m’aide à ajuster l’intensité sans te cramer)</p>
+  <div id="pace" class="choices"></div>
+</div>
+const countriesDiv = document.getElementById("countries");
+
+window.DATA_VOYAGE.countries.forEach((name) => {
+  const el = document.createElement("label");
+  el.innerHTML = `<input type="checkbox" value="${name}"> ${name}`;
+  countriesDiv.appendChild(el);
+});
+
+const maxCountries = getMaxCountriesByDuration(duree);
+const countriesCounter = document.getElementById("countriesCounter");
+const countriesHint = document.getElementById("countriesHint");
+
+function updateCountriesUI() {
+  const checked = document.querySelectorAll("#countries input:checked").length;
+  countriesCounter.textContent = `Pays sélectionnés : ${checked}/${maxCountries}`;
+  countriesHint.textContent = "";
+}
+updateCountriesUI();
+
+countriesDiv.addEventListener("change", (e) => {
+  const t = e.target;
+  if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
+
+  const checkedNow = document.querySelectorAll("#countries input:checked").length;
+  if (t.checked && checkedNow > maxCountries) {
+    t.checked = false;
+    countriesHint.textContent = `Maximum ${maxCountries} pays pour ${duree} jours posés 🙂`;
+  }
+  updateCountriesUI();
+});
+const insoliteDiv = document.getElementById("insolite");
+
+window.DATA_VOYAGE.insoliteChoices.forEach((label) => {
+  const el = document.createElement("label");
+  el.innerHTML = `<input type="radio" name="insolite" value="${label}"> ${label}`;
+  insoliteDiv.appendChild(el);
+});
+const citiesDiv = document.getElementById("cities");
+if (citiesDiv) {
+  CITY_CHOICES.forEach((name) => {
+    const el = document.createElement("label");
+    el.innerHTML = `<input type="checkbox" value="${name}"> ${name}`;
+    citiesDiv.appendChild(el);
+  });
+
+  const maxCities = getMaxCitiesByDuration(duree);
+  const citiesCounter = document.getElementById("citiesCounter");
+  const citiesHint = document.getElementById("citiesHint");
+
+  function updateCitiesUI() {
+    const checked = document.querySelectorAll("#cities input:checked").length;
+    citiesCounter.textContent = `Villes sélectionnées : ${checked}/${maxCities}`;
+    citiesHint.textContent = "";
+  }
+  updateCitiesUI();
+
+  citiesDiv.addEventListener("change", (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
+
+    const checkedNow = document.querySelectorAll("#cities input:checked").length;
+    if (t.checked && checkedNow > maxCities) {
+      t.checked = false;
+      citiesHint.textContent = `Maximum ${maxCities} villes pour ${duree} jours posés 🙂`;
+    }
+    updateCitiesUI();
+  });
+}
+const transportDiv = document.getElementById("transport");
+if (transportDiv) {
+  TRANSPORT_CHOICES.forEach((x) => {
+    const el = document.createElement("label");
+    el.innerHTML = `<input type="checkbox" value="${x.id}"> ${x.label}`;
+    transportDiv.appendChild(el);
+  });
+
+  const maxTransport = getMaxTransportByDuration(duree);
+  const transportCounter = document.getElementById("transportCounter");
+  const transportHint = document.getElementById("transportHint");
+
+  function updateTransportUI() {
+    const checked = document.querySelectorAll("#transport input:checked").length;
+    transportCounter.textContent = `Transports sélectionnés : ${checked}/${maxTransport}`;
+    transportHint.textContent = "";
+  }
+  updateTransportUI();
+
+  transportDiv.addEventListener("change", (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
+
+    const checkedNow = document.querySelectorAll("#transport input:checked").length;
+    if (t.checked && checkedNow > maxTransport) {
+      t.checked = false;
+      transportHint.textContent = `Maximum ${maxTransport} transport(s) 🙂`;
+    }
+    updateTransportUI();
+  });
+}
+const transportDiv = document.getElementById("transport");
+if (transportDiv) {
+  TRANSPORT_CHOICES.forEach((x) => {
+    const el = document.createElement("label");
+    el.innerHTML = `<input type="checkbox" value="${x.id}"> ${x.label}`;
+    transportDiv.appendChild(el);
+  });
+
+  const maxTransport = getMaxTransportByDuration(duree);
+  const transportCounter = document.getElementById("transportCounter");
+  const transportHint = document.getElementById("transportHint");
+
+  function updateTransportUI() {
+    const checked = document.querySelectorAll("#transport input:checked").length;
+    transportCounter.textContent = `Transports sélectionnés : ${checked}/${maxTransport}`;
+    transportHint.textContent = "";
+  }
+  updateTransportUI();
+
+  transportDiv.addEventListener("change", (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
+
+    const checkedNow = document.querySelectorAll("#transport input:checked").length;
+    if (t.checked && checkedNow > maxTransport) {
+      t.checked = false;
+      transportHint.textContent = `Maximum ${maxTransport} transport(s) 🙂`;
+    }
+    updateTransportUI();
+  });
+}
+const avoidDiv = document.getElementById("avoidCountries");
+if (avoidDiv) {
+  window.DATA_VOYAGE.countries.forEach((name) => {
+    const el = document.createElement("label");
+    el.innerHTML = `<input type="checkbox" value="${name}"> ${name}`;
+    avoidDiv.appendChild(el);
+  });
+
+  const maxAvoid = getMaxAvoidCountriesByDuration(duree);
+  const avoidCounter = document.getElementById("avoidCounter");
+  const avoidHint = document.getElementById("avoidHint");
+
+  function updateAvoidUI() {
+    const checked = document.querySelectorAll("#avoidCountries input:checked").length;
+    avoidCounter.textContent = `Pays à éviter : ${checked}/${maxAvoid}`;
+    avoidHint.textContent = "";
+  }
+  updateAvoidUI();
+
+  avoidDiv.addEventListener("change", (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
+
+    const checkedNow = document.querySelectorAll("#avoidCountries input:checked").length;
+    if (t.checked && checkedNow > maxAvoid) {
+      t.checked = false;
+      avoidHint.textContent = `Maximum ${maxAvoid} pays à éviter 🙂`;
+    }
+    updateAvoidUI();
+  });
+}
+const avoidDiv = document.getElementById("avoidCountries");
+if (avoidDiv) {
+  window.DATA_VOYAGE.countries.forEach((name) => {
+    const el = document.createElement("label");
+    el.innerHTML = `<input type="checkbox" value="${name}"> ${name}`;
+    avoidDiv.appendChild(el);
+  });
+
+  const maxAvoid = getMaxAvoidCountriesByDuration(duree);
+  const avoidCounter = document.getElementById("avoidCounter");
+  const avoidHint = document.getElementById("avoidHint");
+
+  function updateAvoidUI() {
+    const checked = document.querySelectorAll("#avoidCountries input:checked").length;
+    avoidCounter.textContent = `Pays à éviter : ${checked}/${maxAvoid}`;
+    avoidHint.textContent = "";
+  }
+  updateAvoidUI();
+
+  avoidDiv.addEventListener("change", (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
+
+    const checkedNow = document.querySelectorAll("#avoidCountries input:checked").length;
+    if (t.checked && checkedNow > maxAvoid) {
+      t.checked = false;
+      avoidHint.textContent = `Maximum ${maxAvoid} pays à éviter 🙂`;
+    }
+    updateAvoidUI();
+  });
+}
+const avoidDiv = document.getElementById("avoidCountries");
+if (avoidDiv) {
+  window.DATA_VOYAGE.countries.forEach((name) => {
+    const el = document.createElement("label");
+    el.innerHTML = `<input type="checkbox" value="${name}"> ${name}`;
+    avoidDiv.appendChild(el);
+  });
+
+  const maxAvoid = getMaxAvoidCountriesByDuration(duree);
+  const avoidCounter = document.getElementById("avoidCounter");
+  const avoidHint = document.getElementById("avoidHint");
+
+  function updateAvoidUI() {
+    const checked = document.querySelectorAll("#avoidCountries input:checked").length;
+    avoidCounter.textContent = `Pays à éviter : ${checked}/${maxAvoid}`;
+    avoidHint.textContent = "";
+  }
+  updateAvoidUI();
+
+  avoidDiv.addEventListener("change", (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
+
+    const checkedNow = document.querySelectorAll("#avoidCountries input:checked").length;
+    if (t.checked && checkedNow > maxAvoid) {
+      t.checked = false;
+      avoidHint.textContent = `Maximum ${maxAvoid} pays à éviter 🙂`;
+    }
+    updateAvoidUI();
+  });
+}
+const paceDiv = document.getElementById("pace");
+if (paceDiv) {
+  PACE_CHOICES.forEach((x) => {
+    const el = document.createElement("label");
+    el.innerHTML = `<input type="radio" name="pace" value="${x.id}"> ${x.label}`;
+    paceDiv.appendChild(el);
+  });
+}
 
     /***********************
      * LIMITES DYNAMIQUES
@@ -246,11 +580,52 @@ function computeEndDate() {
 
       const selectedActivities = [...document.querySelectorAll("#activities input:checked")]
         .map(cb => cb.value);
+      const selectedCountries = [...document.querySelectorAll("#countries input:checked")].map(cb => cb.value);
+      const insolite = document.querySelector("input[name='insolite']:checked")?.value || "";
+
+      const selectedCities = [...document.querySelectorAll("#cities input:checked")].map(cb => cb.value);
+      const selectedTransport = [...document.querySelectorAll("#transport input:checked")].map(cb => cb.value);
+
+      const avoidCountries = [...document.querySelectorAll("#avoidCountries input:checked")].map(cb => cb.value);
+      const pace = document.querySelector("input[name='pace']:checked")?.value || "";
 
       if (controle !== "A" && controle !== "B" && selectedActivities.length === 0) {
         alert("Choisis au moins une activité 🙂");
         return;
       }
+if (selectedCountries.length === 0) {
+  alert("Choisis au moins un pays 🙂");
+  return;
+}
+
+if (!insolite) {
+  alert("Choisis une activité insolite 🙂");
+  return;
+}
+
+if ((controle === "D" || controle === "E") && selectedCities.length === 0) {
+  alert("Choisis au moins une ville 🙂");
+  return;
+}
+
+if ((controle === "D" || controle === "E") && selectedTransport.length === 0) {
+  alert("Choisis au moins un moyen de transport 🙂");
+  return;
+}
+
+if (controle === "E" && avoidCountries.length > 0) {
+  // Empêche la contradiction : choisir et éviter le même pays
+  const conflict = selectedCountries.find(c => avoidCountries.includes(c));
+  if (conflict) {
+    alert(`Tu as choisi et aussi “évité” : ${conflict} 🙂\nRetire-le d’une des deux listes.`);
+    return;
+  }
+}
+
+if (controle === "E" && !pace) {
+  alert("Choisis ton rythme idéal 🙂");
+  return;
+}
 
       const mode = getMode(intensity, comfort);
 
@@ -258,44 +633,73 @@ function computeEndDate() {
       document.getElementById("loading").classList.remove("hidden");
 
       setTimeout(() => {
-        showResult(selectedActivities, mode);
-      }, 5500);
+  showResult({
+    activityIds: selectedActivities,
+    countries: selectedCountries,
+    insolite,
+    cities: selectedCities,
+    transport: selectedTransport,
+    avoidCountries,
+    pace,
+    mode
+  });
+}, 5500);
+
     });
 
     /***********************
      * RÉSULTAT
      ***********************/
-    function showResult(activityIds, mode) {
-      document.getElementById("loading").classList.add("hidden");
+    function showResult(payload) {
+  document.getElementById("loading").classList.add("hidden");
 
-      const result = document.getElementById("result");
-      result.classList.remove("hidden");
+  const result = document.getElementById("result");
+  result.classList.remove("hidden");
 
-      let html = `
-        <h2>Ton voyage</h2>
-        <p><strong>${computeEndDate()}</strong> (${duree} jours)</p>
-        <ul>
-      `;
+  const { activityIds, countries, insolite, cities, transport, avoidCountries, pace, mode } = payload;
 
-      const phrases = [];
+  const phrases = [];
+  activityIds.forEach(id => {
+    const act = window.DATA_VOYAGE.activities.find(a => a.id === id);
+    if (act?.phrases?.[mode]) phrases.push(act.phrases[mode]);
+  });
 
-      activityIds.forEach(id => {
-        const act = DATA_VOYAGE.activities.find(a => a.id === id);
-        if (act && act.phrases && act.phrases[mode]) {
-          phrases.push(act.phrases[mode]);
-        }
-      });
+  const maxPhrases = duree <= 4 ? 3 : duree <= 7 ? 4 : 6;
 
-      const max = duree <= 4 ? 3 : duree <= 7 ? 4 : 6;
+  const transportLabels = transport
+    .map(id => TRANSPORT_CHOICES.find(x => x.id === id)?.label)
+    .filter(Boolean);
 
-      phrases.slice(0, max).forEach(p => {
-        html += `<li>${p}</li>`;
-      });
+  const paceLabel = pace
+    ? (PACE_CHOICES.find(x => x.id === pace)?.label || pace)
+    : "";
 
-      html += "</ul>";
+  let html = `
+    <h2>Ton voyage</h2>
+    <p><strong>${computeEndDate()} 2026</strong></p>
 
-      result.innerHTML = html;
-    }
+    <h3>Grandes étapes</h3>
+    <ul>
+      <li><strong>Pays :</strong> ${countries.join(" → ")}</li>
+      ${cities.length ? `<li><strong>Villes :</strong> ${cities.join(", ")}</li>` : ``}
+      ${transportLabels.length ? `<li><strong>Transport :</strong> ${transportLabels.join(" + ")}</li>` : ``}
+      <li><strong>Insolite :</strong> ${insolite}</li>
+      ${avoidCountries.length ? `<li><strong>À éviter :</strong> ${avoidCountries.join(", ")}</li>` : ``}
+      ${paceLabel ? `<li><strong>Rythme :</strong> ${paceLabel}</li>` : ``}
+    </ul>
+
+    <h3>Moments clés</h3>
+    <ul>
+  `;
+
+  phrases.slice(0, maxPhrases).forEach(p => {
+    html += `<li>${p}</li>`;
+  });
+
+  html += `</ul>`;
+
+  result.innerHTML = html;
+}
   </script>
 
 </body>
