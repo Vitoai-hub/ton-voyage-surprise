@@ -21,3 +21,10 @@ function fabrication() {
   // Redirection vers la page résultat
   window.location.href = `resultat.html?code=${code}`;
 }
+function getMaxActivitiesByDuration(n) {
+  if (n <= 3) return 2;
+  if (n <= 5) return 3;
+  if (n <= 8) return 4;
+  if (n <= 12) return 5;
+  return 6;
+}
