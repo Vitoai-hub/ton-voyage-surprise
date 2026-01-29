@@ -13,23 +13,30 @@
       background: #f7f7f7;
       margin: 0;
       padding: 20px;
+      color: #111;
     }
 
     .hidden { display: none; }
 
-    h1, h2 { margin-bottom: 10px; }
+    h1, h2, h3 { margin-bottom: 10px; }
 
     .section {
       background: white;
       padding: 20px;
       margin-bottom: 20px;
       border-radius: 12px;
+      color: #111;
     }
+
+    /* Fix brutal si ton style.css force du blanc */
+    .section, .section * { color: #111 !important; }
 
     .choices label {
       display: block;
       margin-bottom: 6px;
     }
+
+    input[type="checkbox"] { accent-color: #111; }
 
     button {
       padding: 12px 24px;
@@ -38,7 +45,11 @@
       font-size: 16px;
       cursor: pointer;
       background: #111;
-      color: white;
+      color: white !important; /* on veut que le texte du bouton reste blanc */
+      width: 100%;
+      max-width: 520px;
+      display: block;
+      margin: 0 auto;
     }
 
     .loader {
@@ -51,31 +62,16 @@
       50% { opacity: 1; }
       100% { opacity: 0.3; }
     }
-
-    body { color: #111; }
-    .section { color: #111; }
-    .section h1, .section h2, .section h3, .section p, .section li, .section label {
-      color: #111;
-    }
-    .choices label { color: #111; }
-    input[type="checkbox"] { accent-color: #111; }
-    /* Fix visibilité (ton style.css global met probablement le texte en blanc) */
-    body { color: #111; }
-
-    .section, .section * { 
-      color: #111 !important;
-    }
   </style>
 </head>
 
 <body>
 
-  <!-- RO / MESSAGE -->
+  <!-- INTRO / MESSAGE -->
   <div id="intro" class="section"></div>
 
   <!-- QUESTIONS -->
   <div id="questions" class="section hidden">
-
     <h2>On construit ton voyage</h2>
 
     <!-- ACTIVITÉS -->
@@ -104,12 +100,30 @@
 
   <script>
     /***********************
-     * PARAMÈTRES SIMULÉS
+     * OUTILS
      ***********************/
+    function getMaxActivitiesByDuration(n) {
+      if (n <= 3) return 2;
+      if (n <= 5) return 3;
+      if (n <= 8) return 4;
+      if (n <= 12) return 5;
+      return 6;
+    }
+
+    function getMode(intensity, comfort) {
+      if (intensity <= 2 && comfort === 3) return "chill_premium";
+      if (intensity <= 2 && comfort <= 2) return "chill_roots";
+      if (intensity >= 3 && comfort === 3) return "adventure_comfort";
+      return "adventure_pure";
+    }
+
+    /***********************
+     * PARAMÈTRES (depuis index.html via localStorage)
+     ***********************/
+    const controle  = localStorage.getItem("controle") || "C"; // A B C D E
+    const duree     = Number(localStorage.getItem("duree") || 6);
     const intensity = Number(localStorage.getItem("intensity") || 2); // 1..4
-    const comfort   = Number(localStorage.getItem("comfort")   || 2); // 1..3 
-    const controle = localStorage.getItem("controle") || "C"; // A B C D E
-    const duree = Number(localStorage.getItem("duree") || 6);
+    const comfort   = Number(localStorage.getItem("comfort") || 2);   // 1..3
     const startDate = "11 septembre";
 
     /***********************
@@ -142,68 +156,57 @@
     }
 
     /***********************
-     * ACTIVITÉS
+     * ACTIVITÉS (checkbox)
      ***********************/
     const activitiesDiv = document.getElementById("activities");
 
-    DATA_VOYAGE.activities.forEach(act => {
-      const id = act.id;
-      const label = act.label;
-
-      const el = document.createElement("label");
-      el.innerHTML = `
-        <input type="checkbox" value="${id}">
-        ${label}
-      `;
-      activitiesDiv.appendChild(el);
-    });
-
-    const maxActivities = getMaxActivitiesByDuration(duree);
-
-const counterEl = document.getElementById("activitiesCounter");
-const hintEl = document.getElementById("activitiesHint");
-
-function updateActivitiesUI() {
-  const checked = document.querySelectorAll("#activities input:checked").length;
-  counterEl.textContent = `Activités sélectionnées : ${checked}/${maxActivities}`;
-  hintEl.textContent = "";
-}
-
-updateActivitiesUI();
-
-activitiesDiv.addEventListener("change", (e) => {
-  const target = e.target;
-  if (!(target instanceof HTMLInputElement)) return;
-  if (target.type !== "checkbox") return;
-
-  const checkedNow = document.querySelectorAll("#activities input:checked").length;
-
-  // Si elle vient de cocher et qu'on dépasse → on annule
-  if (target.checked && checkedNow > maxActivities) {
-    target.checked = false;
-    hintEl.textContent = `Tu peux choisir au maximum ${maxActivities} activités pour ${duree} jours 🙂`;
-  }
-
-  updateActivitiesUI();
-});
+    if (!window.DATA_VOYAGE || !DATA_VOYAGE.activities) {
+      activitiesDiv.innerHTML = "<p>Erreur : dataVoyage.js n'est pas chargé.</p>";
+      console.error("DATA_VOYAGE introuvable. Vérifie dataVoyage.js et son chemin.");
+    } else {
+      DATA_VOYAGE.activities.forEach(act => {
+        const el = document.createElement("label");
+        el.innerHTML = `
+          <input type="checkbox" value="${act.id}">
+          ${act.label}
+        `;
+        activitiesDiv.appendChild(el);
+      });
+    }
 
     /***********************
-     * MODE
+     * LIMITES DYNAMIQUES
      ***********************/
-    function getMode(intensity, comfort) {
-      if (intensity <= 2 && comfort === 3) return "chill_premium";
-      if (intensity <= 2 && comfort <= 2) return "chill_roots";
-      if (intensity >= 3 && comfort === 3) return "adventure_comfort";
-      return "adventure_pure";
+    const maxActivities = getMaxActivitiesByDuration(duree);
+    const counterEl = document.getElementById("activitiesCounter");
+    const hintEl = document.getElementById("activitiesHint");
+
+    function updateActivitiesUI() {
+      const checked = document.querySelectorAll("#activities input:checked").length;
+      counterEl.textContent = `Activités sélectionnées : ${checked}/${maxActivities}`;
+      hintEl.textContent = "";
     }
+    updateActivitiesUI();
+
+    activitiesDiv.addEventListener("change", (e) => {
+      const target = e.target;
+      if (!(target instanceof HTMLInputElement)) return;
+      if (target.type !== "checkbox") return;
+
+      const checkedNow = document.querySelectorAll("#activities input:checked").length;
+
+      if (target.checked && checkedNow > maxActivities) {
+        target.checked = false;
+        hintEl.textContent = `Tu peux choisir au maximum ${maxActivities} activités pour ${duree} jours 🙂`;
+      }
+
+      updateActivitiesUI();
+    });
 
     /***********************
      * VALIDATION
      ***********************/
     document.getElementById("validateBtn")?.addEventListener("click", () => {
-
-      const intensity = Number(document.getElementById("intensity").value);
-      const comfort = Number(document.getElementById("comfort").value);
 
       const selectedActivities = [...document.querySelectorAll("#activities input:checked")]
         .map(cb => cb.value);
@@ -220,7 +223,7 @@ activitiesDiv.addEventListener("change", (e) => {
 
       setTimeout(() => {
         showResult(selectedActivities, mode);
-      }, 5500); // ⏱️ effet waouh
+      }, 5500);
     });
 
     /***********************
@@ -242,12 +245,11 @@ activitiesDiv.addEventListener("change", (e) => {
 
       activityIds.forEach(id => {
         const act = DATA_VOYAGE.activities.find(a => a.id === id);
-        if (act && act.phrases[mode]) {
+        if (act && act.phrases && act.phrases[mode]) {
           phrases.push(act.phrases[mode]);
         }
       });
 
-      // Limite selon durée
       const max = duree <= 4 ? 3 : duree <= 7 ? 4 : 6;
 
       phrases.slice(0, max).forEach(p => {
