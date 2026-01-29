@@ -79,6 +79,8 @@
 
     <!-- ACTIVITÉS -->
     <h3>Ce qui te fait envie</h3>
+    <p id="activitiesCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
+    <p id="activitiesHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
     <div id="activities" class="choices"></div>
 
     <br>
@@ -153,6 +155,35 @@
       activitiesDiv.appendChild(el);
     });
 
+    const maxActivities = getMaxActivitiesByDuration(duree);
+
+const counterEl = document.getElementById("activitiesCounter");
+const hintEl = document.getElementById("activitiesHint");
+
+function updateActivitiesUI() {
+  const checked = document.querySelectorAll("#activities input:checked").length;
+  counterEl.textContent = `Activités sélectionnées : ${checked}/${maxActivities}`;
+  hintEl.textContent = "";
+}
+
+updateActivitiesUI();
+
+activitiesDiv.addEventListener("change", (e) => {
+  const target = e.target;
+  if (!(target instanceof HTMLInputElement)) return;
+  if (target.type !== "checkbox") return;
+
+  const checkedNow = document.querySelectorAll("#activities input:checked").length;
+
+  // Si elle vient de cocher et qu'on dépasse → on annule
+  if (target.checked && checkedNow > maxActivities) {
+    target.checked = false;
+    hintEl.textContent = `Tu peux choisir au maximum ${maxActivities} activités pour ${duree} jours 🙂`;
+  }
+
+  updateActivitiesUI();
+});
+
     /***********************
      * MODE
      ***********************/
@@ -173,6 +204,11 @@
 
       const selectedActivities = [...document.querySelectorAll("#activities input:checked")]
         .map(cb => cb.value);
+
+      if (controle !== "A" && controle !== "B" && selectedActivities.length === 0) {
+        alert("Choisis au moins une activité 🙂");
+        return;
+      }
 
       const mode = getMode(intensity, comfort);
 
