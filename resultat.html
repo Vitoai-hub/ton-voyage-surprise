@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Ton voyage – Résultat</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .module{ display:none; }
+    .module.active{ display:block; }
+    .module{
+      max-width: 980px;
+      margin: 18px auto;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+    }
+    .module h2{ margin-top:0; }
+  </style>
+</head>
+
+<body>
+
+<h1>Ton voyage prend forme</h1>
+
+<!-- SUSPENSE TOTAL -->
+<div id="suspense" class="module">
+  <h2>🌑 Surprise totale</h2>
+  <p>
+    Ce voyage existe déjà.  
+    Il a été pensé, préparé, ajusté.  
+    Tu n’as rien à décider.
+  </p>
+  <p><i>Il se révélera au bon moment.</i></p>
+</div>
+
+<!-- VISION GLOBALE -->
+<div id="vision" class="module">
+  <h2>🌍 L’esprit du voyage</h2>
+  <p>
+    Un itinéraire en Europe centrale et sud-est,  
+    mêlant villes inspirantes, nature forte  
+    et moments pour souffler ensemble.
+  </p>
+</div>
+
+<!-- DURÉE -->
+<div id="duree_longue" class="module">
+  <h2>🕒 Durée – grande version</h2>
+  <p>
+    Avec ce nombre de jours posés,  
+    le voyage peut se déployer sans contrainte :  
+    transitions douces, journées off, respiration.
+  </p>
+</div>
+
+<div id="duree_courte" class="module">
+  <h2>🕒 Durée – version condensée</h2>
+  <p>
+    Le voyage va à l’essentiel,  
+    sans perdre son sens ni son équilibre.
+  </p>
+</div>
+
+<!-- AVENTURE -->
+<div id="aventure_forte" class="module">
+  <h2>⛰️ Aventure marquante</h2>
+  <p>
+    Une expérience forte est intégrée au voyage :  
+    immersion nature, effort choisi, souvenirs puissants.
+  </p>
+</div>
+
+<div id="aventure_douce" class="module">
+  <h2>🌿 Aventure douce</h2>
+  <p>
+    La nature est présente, accessible,  
+    sans pression ni contrainte.
+  </p>
+</div>
+
+<!-- CONFORT -->
+<div id="confort_soigne" class="module">
+  <h2>🛏️ Confort soigné</h2>
+  <p>
+    Les logements ont été choisis pour leur charme,  
+    leur emplacement et les moments cocooning.
+  </p>
+</div>
+
+<div id="confort_essentiel" class="module">
+  <h2>🎒 Confort essentiel</h2>
+  <p>
+    Simple, fonctionnel, pratique,  
+    pour privilégier l’expérience.
+  </p>
+</div>
+
+<!-- QUESTIONS (contrôle 1 à 3) -->
+<div id="questions" class="module">
+  <h2>🧭 Construisons-le ensemble</h2>
+  <p>
+    Quelques choix me permettront d’ajuster le voyage  
+    pour qu’il te ressemble encore plus.
+  </p>
+</div>
+
+<script>
+  // Récupération du code
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get("code");
+
+  if (!code || code.length !== 4) {
+    alert("Code invalide.");
+  }
+
+  const duree = parseInt(code[0]);
+  const controle = parseInt(code[1]);
+  const aventure = parseInt(code[2]);
+  const confort = parseInt(code[3]);
+
+  // Contrôle
+  if (controle === 5) {
+    document.getElementById("suspense").classList.add("active");
+  } else {
+    document.getElementById("vision").classList.add("active");
+  }
+
+  if (controle <= 3) {
+    document.getElementById("questions").classList.add("active");
+  }
+
+  // Durée
+  if (duree >= 8) {
+    document.getElementById("duree_longue").classList.add("active");
+  } else {
+    document.getElementById("duree_courte").classList.add("active");
+  }
+
+  // Aventure
+  if (aventure >= 3) {
+    document.getElementById("aventure_forte").classList.add("active");
+  } else {
+    document.getElementById("aventure_douce").classList.add("active");
+  }
+
+  // Confort
+  if (confort === 3) {
+    document.getElementById("confort_soigne").classList.add("active");
+  } else {
+    document.getElementById("confort_essentiel").classList.add("active");
+  }
+</script>
+
+</body>
+</html>
