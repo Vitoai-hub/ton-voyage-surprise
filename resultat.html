@@ -56,40 +56,44 @@
       font-size: 18px;
       animation: fade 1.5s infinite;
     }
-
     @keyframes fade {
       0% { opacity: 0.3; }
       50% { opacity: 1; }
       100% { opacity: 0.3; }
     }
+
+    /* Steps */
     .step { display: none; }
-.step.active { display: block; animation: stepIn 260ms ease-out both; }
-@keyframes stepIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.nextRow{
-  display:flex;
-  justify-content:flex-end;
-  margin-top:10px;
-}
+    .step.active { display: block; animation: stepIn 260ms ease-out both; }
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-.nextBtn{
-  background: transparent !important;
-  border: 1px solid rgba(0,0,0,.2) !important;
-  color: rgba(0,0,0,.65) !important;
-  border-radius: 999px !important;
-  padding: 6px 12px !important;
-  font-size: 13px !important;
-  cursor: pointer;
-  width: auto !important;
-  max-width: none !important;
-}
+    /* Petit bouton "Suivant" discret */
+    .nextRow{
+      display:flex;
+      justify-content:flex-end;
+      margin-top:10px;
+    }
+    .nextBtn{
+      background: transparent !important;
+      border: 1px solid rgba(0,0,0,.2) !important;
+      color: rgba(0,0,0,.65) !important;
+      border-radius: 999px !important;
+      padding: 6px 12px !important;
+      font-size: 13px !important;
+      cursor: pointer;
+      width: auto !important;
+      max-width: none !important;
+      margin: 0 !important;
+    }
+    .nextBtn:hover{
+      border-color: rgba(0,0,0,.35) !important;
+      color: rgba(0,0,0,.85) !important;
+    }
 
-.nextBtn:hover{
-  border-color: rgba(0,0,0,.35) !important;
-  color: rgba(0,0,0,.85) !important;
-}
+    hr { border: none; border-top: 1px solid rgba(0,0,0,.10); }
   </style>
 </head>
 
@@ -104,86 +108,91 @@
 
     <!-- ACTIVITÉS -->
     <div class="step" id="stepActivities">
-  <h3>Ce qui te fait envie</h3>
-  <p id="activitiesCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
-  <p id="activitiesHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
-  <div id="activities" class="choices"></div>
-  </div>
-  <hr style="margin:18px 0; opacity:.2">
-    <div class="nextRow">
-    <button type="button" class="nextBtn" id="nextActivities">Suivant</button>
+      <h3>Ce qui te fait envie</h3>
+      <p id="activitiesCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
+      <p id="activitiesHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
+      <div id="activities" class="choices"></div>
+
+      <div class="nextRow">
+        <button type="button" class="nextBtn" id="nextActivities">Suivant</button>
+      </div>
     </div>
 
     <!-- PAYS -->
     <div class="step" id="stepCountries">
-  <hr style="margin:18px 0; opacity:.2">
-  <h3>Pays qui te tentent</h3>
-  <p id="countriesCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
-  <p id="countriesHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
-  <div id="countries" class="choices"></div>
-  </div>
-    <hr style="margin:18px 0; opacity:.2">
-    <div class="nextRow">
-    <button type="button" class="nextBtn" id="nextActivities">Suivant</button>
+      <hr style="margin:18px 0; opacity:.2">
+      <h3>Pays qui te tentent</h3>
+      <p id="countriesCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
+      <p id="countriesHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
+      <div id="countries" class="choices"></div>
+
+      <div class="nextRow">
+        <button type="button" class="nextBtn" id="nextCountries">Suivant</button>
+      </div>
     </div>
 
     <!-- INSOLITE -->
     <div class="step" id="stepInsolite">
-  <hr style="margin:18px 0; opacity:.2">
-  <h3>Une activité insolite</h3>
-  <p style="margin: 6px 0 10px; opacity: 0.8;">Choisis-en une seule 🙂</p>
-  <div id="insolite" class="choices"></div>
-</div>
-    
-    <!-- Bloc D -->
+      <hr style="margin:18px 0; opacity:.2">
+      <h3>Une activité insolite</h3>
+      <p style="margin: 6px 0 10px; opacity: 0.8;">Choisis-en une seule 🙂</p>
+      <div id="insolite" class="choices"></div>
+    </div>
+
+    <!-- Bloc D (D/E) -->
     <div id="blockD" class="hidden">
-  <div class="step" id="stepCities">
-    <hr style="margin:18px 0; opacity:.2">
-    <h3>Villes que tu veux absolument voir</h3>
-    <p id="citiesCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
-    <p id="citiesHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
-    <div id="cities" class="choices"></div>
-  </div>
-      <div class="nextRow">
-    <button type="button" class="nextBtn" id="nextActivities">Suivant</button>
-    </div>
+      <div class="step" id="stepCities">
+        <hr style="margin:18px 0; opacity:.2">
+        <h3>Villes que tu veux absolument voir</h3>
+        <p id="citiesCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
+        <p id="citiesHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
+        <div id="cities" class="choices"></div>
 
-  <div class="step" id="stepTransport">
-    <hr style="margin:18px 0; opacity:.2">
-    <h3>Moyen(s) de transport que tu aimerais emprunter</h3>
-    <p id="transportCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
-    <p id="transportHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
-    <div id="transport" class="choices"></div>
-  </div>
-      <div class="nextRow">
-    <button type="button" class="nextBtn" id="nextActivities">Suivant</button>
-    </div>
-</div>
+        <div class="nextRow">
+          <button type="button" class="nextBtn" id="nextCities">Suivant</button>
+        </div>
+      </div>
 
+      <div class="step" id="stepTransport">
+        <hr style="margin:18px 0; opacity:.2">
+        <h3>Moyen(s) de transport que tu aimerais emprunter</h3>
+        <p id="transportCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
+        <p id="transportHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
+        <div id="transport" class="choices"></div>
+
+        <div class="nextRow">
+          <button type="button" class="nextBtn" id="nextTransport">Suivant</button>
+        </div>
+      </div>
+    </div>
 
     <!-- Bloc E -->
     <div id="blockE" class="hidden">
-  <div class="step" id="stepAvoid">
-    <hr style="margin:18px 0; opacity:.2">
-    <h3>Pays que tu n’as pas envie de faire pendant CE voyage</h3>
-    <p id="avoidCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
-    <p id="avoidHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
-    <div id="avoidCountries" class="choices"></div>
-  </div>
+      <div class="step" id="stepAvoid">
+        <hr style="margin:18px 0; opacity:.2">
+        <h3>Pays que tu n’as pas envie de faire pendant CE voyage</h3>
+        <p id="avoidCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
+        <p id="avoidHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
+        <div id="avoidCountries" class="choices"></div>
 
-  <div class="step" id="stepPace">
-    <hr style="margin:18px 0; opacity:.2">
-    <h3>Ton rythme idéal</h3>
-    <p style="margin: 6px 0 10px; opacity: 0.8;">(Ça m’aide à ajuster l’intensité sans te cramer)</p>
-    <div id="pace" class="choices"></div>
-  </div>
-</div>
+        <div class="nextRow">
+          <button type="button" class="nextBtn" id="nextAvoid">Suivant</button>
+        </div>
+      </div>
 
-<div class="step" id="stepValidate">
-  <br>
-  <button id="validateBtn">Valider mes réponses</button>
-</div>
+      <div class="step" id="stepPace">
+        <hr style="margin:18px 0; opacity:.2">
+        <h3>Ton rythme idéal</h3>
+        <p style="margin: 6px 0 10px; opacity: 0.8;">(Ça m’aide à ajuster l’intensité sans te cramer)</p>
+        <div id="pace" class="choices"></div>
+      </div>
+    </div>
 
+    <!-- VALIDER -->
+    <div class="step" id="stepValidate">
+      <hr style="margin:18px 0; opacity:.2">
+      <button id="validateBtn">Valider mes réponses</button>
+    </div>
   </div>
 
   <!-- LOADING -->
@@ -202,7 +211,7 @@
 
   <script>
     /***********************
-     * OUTILS
+     * OUTILS LIMITES
      ***********************/
     function getMaxActivitiesByDuration(n) {
       if (n <= 3) return 2;
@@ -240,6 +249,60 @@
       return "adventure_pure";
     }
 
+    function showStep(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add("active");
+    }
+
+    function countChecked(selector) {
+      return document.querySelectorAll(selector + " input:checked").length;
+    }
+
+    function hasRadio(name) {
+      return !!document.querySelector(`input[name="${name}"]:checked`);
+    }
+
+    function enforceMaxCheckbox(containerSelector, max, hintEl) {
+      const container = document.querySelector(containerSelector);
+      if (!container) return;
+
+      container.addEventListener("change", (e) => {
+        const t = e.target;
+        if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
+
+        const checkedNow = countChecked(containerSelector);
+        if (t.checked && checkedNow > max) {
+          t.checked = false;
+          if (hintEl) hintEl.textContent = `Maximum ${max} choix 🙂`;
+        } else {
+          if (hintEl) hintEl.textContent = "";
+        }
+      });
+    }
+
+    function updateCounter(counterEl, label, n, max) {
+      if (!counterEl) return;
+      counterEl.textContent = `${label} : ${n}/${max} (max)`;
+    }
+
+    // Révélation : auto quand max atteint + bouton "Suivant" (pas besoin d'atteindre le max)
+    function revealOnMaxOrNext({ containerSelector, max, nextButtonId, nextStepId, counterEl, hintEl, label }) {
+      const container = document.querySelector(containerSelector);
+      const nextBtn = document.getElementById(nextButtonId);
+
+      const refresh = () => {
+        const n = countChecked(containerSelector);
+        updateCounter(counterEl, label, n, max);
+        if (n >= max) showStep(nextStepId);
+      };
+
+      container?.addEventListener("change", refresh);
+      nextBtn?.addEventListener("click", () => showStep(nextStepId));
+
+      refresh();
+    }
+
     /***********************
      * PARAMÈTRES
      ***********************/
@@ -249,17 +312,21 @@
     const comfort   = Number(localStorage.getItem("comfort") || 2);   // 1..3
     const startDate = "11 septembre";
 
-    const CITY_CHOICES = [
-      "Venise","Milan","Rome",
-      "Ljubljana","Bled",
-      "Vienne","Salzbourg","Hallstatt",
-      "Prague",
-      "Budapest",
-      "Bratislava",
-      "Zagreb","Split","Dubrovnik",
-      "Sarajevo","Mostar",
-      "Munich","Berlin"
-    ];
+    /***********************
+     * VILLES PAR PAYS (filtrage)
+     ***********************/
+    const CITIES_BY_COUNTRY = {
+      "Italie": ["Venise", "Milan", "Rome"],
+      "Slovénie": ["Ljubljana", "Bled"],
+      "Autriche": ["Vienne", "Salzbourg", "Hallstatt"],
+      "République Tchèque": ["Prague"],
+      "Hongrie": ["Budapest"],
+      "Slovaquie": ["Bratislava"],
+      "Croatie": ["Zagreb", "Split", "Dubrovnik"],
+      "Bosnie": ["Sarajevo", "Mostar"],
+      "Allemagne": ["Munich", "Berlin"],
+      "Roumanie": ["Bucarest", "Brașov"]
+    };
 
     const TRANSPORT_CHOICES = [
       { id: "plane", label: "✈️ Avion" },
@@ -276,7 +343,7 @@
     ];
 
     /***********************
-     * DATES (ton calcul)
+     * DATES (ton calcul 2026)
      ***********************/
     function computeTripEndDayFromPaidDays(d) {
       const firstWorkMonday = 14; // septembre 2026
@@ -301,14 +368,13 @@
     const intro = document.getElementById("intro");
     const questions = document.getElementById("questions");
 
-    // On cache l'intro au départ, et on l'affiche selon le mode
     intro.classList.add("hidden");
 
     if (controle === "A") {
       intro.classList.remove("hidden");
       intro.innerHTML = `
         <h1>✨ Surprise ✨</h1>
-        <p>Voyage ${computeEndDate()}.</p>
+        <p><strong>${computeEndDate()} 2026</strong></p>
         <p>Je te garde 100% de surprise… mais tu auras quelques indices d’ici là 😉</p>
       `;
     } else if (controle === "B") {
@@ -323,67 +389,52 @@
         intro.innerHTML = `
           <h1>💛 Confiance</h1>
           <p><strong>${computeEndDate()} 2026</strong></p>
-          <p>Tu poses <strong>${duree} jour${duree > 1 ? "s" : ""}</strong>, et je te prépare un séjour fantastique de <strong>${totalDays} jours</strong> (week-ends inclus) ✨ à partir du ${startDate}.</p>
+          <p>Tu poses <strong>${duree} jour${duree > 1 ? "s" : ""}</strong>,
+             et je te prépare un séjour fantastique de <strong>${totalDays} jours</strong> (week-ends inclus) ✨ à partir du ${startDate}.</p>
         `;
       }, 5500);
 
     } else {
       intro.classList.remove("hidden");
+      const totalDays = computeTripTotalDays(duree);
+
       intro.innerHTML = `
         <h1>On construit ton voyage</h1>
-        <p>Un séjour de ${duree} jour${duree > 1 ? "s" : ""} à partir du ${startDate}.</p>
+        <p><strong>${computeEndDate()} 2026</strong></p>
+        <p>Tu poses <strong>${duree} jour${duree > 1 ? "s" : ""}</strong>,
+           donc on part sur <strong>${totalDays} jours</strong> (week-ends inclus) à partir du ${startDate}.</p>
+        <p style="opacity:.85">Réponds aux questions ci-dessous : je m’en sers pour ajuster les pays, les grandes étapes, le confort et l’intensité.</p>
       `;
+
       questions.classList.remove("hidden");
     }
 
-    // Affichage progressif D/E
+    // Affichage D/E
     const blockD = document.getElementById("blockD");
     const blockE = document.getElementById("blockE");
-    const isD = (controle === "D");
-    const isE = (controle === "E");
-    if (isD || isE) blockD.classList.remove("hidden");
-    if (isE) blockE.classList.remove("hidden");
+    if (controle === "D" || controle === "E") blockD.classList.remove("hidden");
+    if (controle === "E") blockE.classList.remove("hidden");
 
     /***********************
-     * ACTIVITÉS
+     * DATA CHECK
      ***********************/
     const activitiesDiv = document.getElementById("activities");
-
     if (!window.DATA_VOYAGE || !Array.isArray(window.DATA_VOYAGE.activities)) {
       activitiesDiv.innerHTML = "<p>Erreur : dataVoyage.js n'est pas chargé.</p>";
       console.error("DATA_VOYAGE introuvable.");
-    } else {
-      window.DATA_VOYAGE.activities.forEach(act => {
-        const el = document.createElement("label");
-        el.innerHTML = `<input type="checkbox" value="${act.id}"> ${act.label}`;
-        activitiesDiv.appendChild(el);
-      });
     }
-
-    // Limite activités
-    const maxActivities = getMaxActivitiesByDuration(duree);
-    const counterEl = document.getElementById("activitiesCounter");
-    const hintEl = document.getElementById("activitiesHint");
-    function updateActivitiesUI() {
-      const checked = document.querySelectorAll("#activities input:checked").length;
-      counterEl.textContent = `Activités sélectionnées : ${checked}/${maxActivities}`;
-      hintEl.textContent = "";
-    }
-    updateActivitiesUI();
-    activitiesDiv.addEventListener("change", (e) => {
-      const t = e.target;
-      if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
-      const checkedNow = document.querySelectorAll("#activities input:checked").length;
-      if (t.checked && checkedNow > maxActivities) {
-        t.checked = false;
-        hintEl.textContent = `Tu peux choisir au maximum ${maxActivities} activités pour ${duree} jours 🙂`;
-      }
-      updateActivitiesUI();
-    });
 
     /***********************
-     * PAYS
+     * REMPLISSAGE DES CHOIX
      ***********************/
+    // ACTIVITÉS
+    window.DATA_VOYAGE.activities.forEach(act => {
+      const el = document.createElement("label");
+      el.innerHTML = `<input type="checkbox" value="${act.id}"> ${act.label}`;
+      activitiesDiv.appendChild(el);
+    });
+
+    // PAYS
     const countriesDiv = document.getElementById("countries");
     window.DATA_VOYAGE.countries.forEach((name) => {
       const el = document.createElement("label");
@@ -391,29 +442,7 @@
       countriesDiv.appendChild(el);
     });
 
-    const maxCountries = getMaxCountriesByDuration(duree);
-    const countriesCounter = document.getElementById("countriesCounter");
-    const countriesHint = document.getElementById("countriesHint");
-    function updateCountriesUI() {
-      const checked = document.querySelectorAll("#countries input:checked").length;
-      countriesCounter.textContent = `Pays sélectionnés : ${checked}/${maxCountries}`;
-      countriesHint.textContent = "";
-    }
-    updateCountriesUI();
-    countriesDiv.addEventListener("change", (e) => {
-      const t = e.target;
-      if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
-      const checkedNow = document.querySelectorAll("#countries input:checked").length;
-      if (t.checked && checkedNow > maxCountries) {
-        t.checked = false;
-        countriesHint.textContent = `Maximum ${maxCountries} pays pour ${duree} jours posés 🙂`;
-      }
-      updateCountriesUI();
-    });
-
-    /***********************
-     * INSOLITE (radio)
-     ***********************/
+    // INSOLITE
     const insoliteDiv = document.getElementById("insolite");
     window.DATA_VOYAGE.insoliteChoices.forEach((label) => {
       const el = document.createElement("label");
@@ -421,39 +450,7 @@
       insoliteDiv.appendChild(el);
     });
 
-    /***********************
-     * VILLES (D/E)
-     ***********************/
-    const citiesDiv = document.getElementById("cities");
-    CITY_CHOICES.forEach((name) => {
-      const el = document.createElement("label");
-      el.innerHTML = `<input type="checkbox" value="${name}"> ${name}`;
-      citiesDiv.appendChild(el);
-    });
-
-    const maxCities = getMaxCitiesByDuration(duree);
-    const citiesCounter = document.getElementById("citiesCounter");
-    const citiesHint = document.getElementById("citiesHint");
-    function updateCitiesUI() {
-      const checked = document.querySelectorAll("#cities input:checked").length;
-      citiesCounter.textContent = `Villes sélectionnées : ${checked}/${maxCities}`;
-      citiesHint.textContent = "";
-    }
-    updateCitiesUI();
-    citiesDiv.addEventListener("change", (e) => {
-      const t = e.target;
-      if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
-      const checkedNow = document.querySelectorAll("#cities input:checked").length;
-      if (t.checked && checkedNow > maxCities) {
-        t.checked = false;
-        citiesHint.textContent = `Maximum ${maxCities} villes pour ${duree} jours posés 🙂`;
-      }
-      updateCitiesUI();
-    });
-
-    /***********************
-     * TRANSPORT (D/E)
-     ***********************/
+    // TRANSPORT
     const transportDiv = document.getElementById("transport");
     TRANSPORT_CHOICES.forEach((x) => {
       const el = document.createElement("label");
@@ -461,29 +458,7 @@
       transportDiv.appendChild(el);
     });
 
-    const maxTransport = getMaxTransportByDuration(duree);
-    const transportCounter = document.getElementById("transportCounter");
-    const transportHint = document.getElementById("transportHint");
-    function updateTransportUI() {
-      const checked = document.querySelectorAll("#transport input:checked").length;
-      transportCounter.textContent = `Transports sélectionnés : ${checked}/${maxTransport}`;
-      transportHint.textContent = "";
-    }
-    updateTransportUI();
-    transportDiv.addEventListener("change", (e) => {
-      const t = e.target;
-      if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
-      const checkedNow = document.querySelectorAll("#transport input:checked").length;
-      if (t.checked && checkedNow > maxTransport) {
-        t.checked = false;
-        transportHint.textContent = `Maximum ${maxTransport} transport(s) 🙂`;
-      }
-      updateTransportUI();
-    });
-
-    /***********************
-     * A ÉVITER (E)
-     ***********************/
+    // A ÉVITER
     const avoidDiv = document.getElementById("avoidCountries");
     window.DATA_VOYAGE.countries.forEach((name) => {
       const el = document.createElement("label");
@@ -491,109 +466,159 @@
       avoidDiv.appendChild(el);
     });
 
-    const maxAvoid = getMaxAvoidCountriesByDuration(duree);
-    const avoidCounter = document.getElementById("avoidCounter");
-    const avoidHint = document.getElementById("avoidHint");
-    function updateAvoidUI() {
-      const checked = document.querySelectorAll("#avoidCountries input:checked").length;
-      avoidCounter.textContent = `Pays à éviter : ${checked}/${maxAvoid}`;
-      avoidHint.textContent = "";
-    }
-    updateAvoidUI();
-    avoidDiv.addEventListener("change", (e) => {
-      const t = e.target;
-      if (!(t instanceof HTMLInputElement) || t.type !== "checkbox") return;
-      const checkedNow = document.querySelectorAll("#avoidCountries input:checked").length;
-      if (t.checked && checkedNow > maxAvoid) {
-        t.checked = false;
-        avoidHint.textContent = `Maximum ${maxAvoid} pays à éviter 🙂`;
-      }
-      updateAvoidUI();
-    });
-
-    /***********************
-     * PACE (E)
-     ***********************/
+    // PACE
     const paceDiv = document.getElementById("pace");
     PACE_CHOICES.forEach((x) => {
       const el = document.createElement("label");
       el.innerHTML = `<input type="radio" name="pace" value="${x.id}"> ${x.label}`;
       paceDiv.appendChild(el);
     });
-function showStep(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.add("active");
-}
-
-function countChecked(selector) {
-  return document.querySelectorAll(selector + " input:checked").length;
-}
-
-function hasRadio(name) {
-  return !!document.querySelector(`input[name="${name}"]:checked`);
-}
-
-// Au début : seulement activités
-showStep("stepActivities");
-
-// Quand activités OK -> pays
-activitiesDiv.addEventListener("change", () => {
-  if (countChecked("#activities") >= 1) showStep("stepCountries");
-});
-
-// Quand pays OK -> insolite
-countriesDiv.addEventListener("change", () => {
-  if (countChecked("#countries") >= 1) showStep("stepInsolite");
-});
-
-// Quand insolite choisi -> suite selon C/D/E
-insoliteDiv.addEventListener("change", () => {
-  if (!hasRadio("insolite")) return;
-
-  // Mode C : on peut valider direct
-  if (controle === "C") {
-    showStep("stepValidate");
-    return;
-  }
-
-  // Mode D/E : villes puis transport
-  showStep("stepCities");
-});
-
-// Villes -> transport (D/E)
-const citiesDiv2 = document.getElementById("cities");
-citiesDiv2?.addEventListener("change", () => {
-  if (countChecked("#cities") >= 1) showStep("stepTransport");
-});
-
-// Transport -> soit valider (D) soit avoid (E)
-const transportDiv2 = document.getElementById("transport");
-transportDiv2?.addEventListener("change", () => {
-  if (countChecked("#transport") >= 1) {
-    if (controle === "D") {
-      showStep("stepValidate");
-    } else if (controle === "E") {
-      showStep("stepAvoid");
-    }
-  }
-});
-
-// Avoid -> pace
-const avoidDiv2 = document.getElementById("avoidCountries");
-avoidDiv2?.addEventListener("change", () => {
-  // en E, on peut passer même si 0 évité, donc on révèle dès qu'on a touché
-  showStep("stepPace");
-});
-
-// Pace -> valider
-const paceDiv2 = document.getElementById("pace");
-paceDiv2?.addEventListener("change", () => {
-  if (hasRadio("pace")) showStep("stepValidate");
-});
 
     /***********************
-     * VALIDATION
+     * VILLES (FILTRÉES PAR PAYS)
+     ***********************/
+    const citiesDiv = document.getElementById("cities");
+
+    function getSelectedCountries() {
+      return [...document.querySelectorAll("#countries input:checked")].map(cb => cb.value);
+    }
+
+    function buildCitiesForSelectedCountries() {
+      if (!citiesDiv) return;
+
+      const selectedCountries = getSelectedCountries();
+      const citySet = new Set();
+
+      selectedCountries.forEach(country => {
+        (CITIES_BY_COUNTRY[country] || []).forEach(city => citySet.add(city));
+      });
+
+      const cities = [...citySet];
+
+      citiesDiv.innerHTML = "";
+      if (cities.length === 0) {
+        citiesDiv.innerHTML = `<p style="opacity:.8">Choisis d’abord des pays, et je te proposerai les villes correspondantes 🙂</p>`;
+        return;
+      }
+
+      cities.forEach((name) => {
+        const el = document.createElement("label");
+        el.innerHTML = `<input type="checkbox" value="${name}"> ${name}`;
+        citiesDiv.appendChild(el);
+      });
+    }
+
+    // Quand on change les pays, on reconstruit les villes (et ça efface les anciennes sélections)
+    countriesDiv.addEventListener("change", () => {
+      buildCitiesForSelectedCountries();
+    });
+
+    // Init (au cas où)
+    buildCitiesForSelectedCountries();
+
+    /***********************
+     * LIMITES + COMPTEURS
+     ***********************/
+    const maxActivities = getMaxActivitiesByDuration(duree);
+    const maxCountries = getMaxCountriesByDuration(duree);
+    const maxCities = getMaxCitiesByDuration(duree);
+    const maxTransport = getMaxTransportByDuration(duree);
+    const maxAvoid = getMaxAvoidCountriesByDuration(duree);
+
+    enforceMaxCheckbox("#activities", maxActivities, document.getElementById("activitiesHint"));
+    enforceMaxCheckbox("#countries", maxCountries, document.getElementById("countriesHint"));
+    enforceMaxCheckbox("#cities", maxCities, document.getElementById("citiesHint"));
+    enforceMaxCheckbox("#transport", maxTransport, document.getElementById("transportHint"));
+    enforceMaxCheckbox("#avoidCountries", maxAvoid, document.getElementById("avoidHint"));
+
+    /***********************
+     * PROGRESSION
+     ***********************/
+    showStep("stepActivities");
+
+    revealOnMaxOrNext({
+      containerSelector: "#activities",
+      max: maxActivities,
+      nextButtonId: "nextActivities",
+      nextStepId: "stepCountries",
+      counterEl: document.getElementById("activitiesCounter"),
+      hintEl: document.getElementById("activitiesHint"),
+      label: "Activités sélectionnées"
+    });
+
+    revealOnMaxOrNext({
+      containerSelector: "#countries",
+      max: maxCountries,
+      nextButtonId: "nextCountries",
+      nextStepId: "stepInsolite",
+      counterEl: document.getElementById("countriesCounter"),
+      hintEl: document.getElementById("countriesHint"),
+      label: "Pays sélectionnés"
+    });
+
+    // Insolite (radio) -> suite
+    insoliteDiv.addEventListener("change", () => {
+      if (!hasRadio("insolite")) return;
+
+      if (controle === "C") {
+        showStep("stepValidate");
+        return;
+      }
+
+      // D / E
+      buildCitiesForSelectedCountries();
+      showStep("stepCities");
+    });
+
+    // Villes -> Transport
+    citiesDiv?.addEventListener("change", () => {
+      updateCounter(
+        document.getElementById("citiesCounter"),
+        "Villes sélectionnées",
+        countChecked("#cities"),
+        maxCities
+      );
+      if (countChecked("#cities") >= maxCities) showStep("stepTransport");
+    });
+
+    document.getElementById("nextCities")?.addEventListener("click", () => showStep("stepTransport"));
+
+    // Transport -> D => valider / E => avoid
+    document.getElementById("nextTransport")?.addEventListener("click", () => {
+      if (controle === "D") showStep("stepValidate");
+      if (controle === "E") showStep("stepAvoid");
+    });
+    transportDiv?.addEventListener("change", () => {
+      updateCounter(
+        document.getElementById("transportCounter"),
+        "Transports sélectionnés",
+        countChecked("#transport"),
+        maxTransport
+      );
+      if (countChecked("#transport") >= maxTransport) {
+        if (controle === "D") showStep("stepValidate");
+        if (controle === "E") showStep("stepAvoid");
+      }
+    });
+
+    // Avoid -> Pace (E)
+    document.getElementById("nextAvoid")?.addEventListener("click", () => showStep("stepPace"));
+    avoidDiv?.addEventListener("change", () => {
+      updateCounter(
+        document.getElementById("avoidCounter"),
+        "Pays à éviter",
+        countChecked("#avoidCountries"),
+        maxAvoid
+      );
+    });
+
+    // Pace -> Valider
+    paceDiv?.addEventListener("change", () => {
+      if (hasRadio("pace")) showStep("stepValidate");
+    });
+
+    /***********************
+     * VALIDATION + RESULT
      ***********************/
     document.getElementById("validateBtn")?.addEventListener("click", () => {
       const selectedActivities = [...document.querySelectorAll("#activities input:checked")].map(cb => cb.value);
@@ -642,9 +667,6 @@ paceDiv2?.addEventListener("change", () => {
       }, 5500);
     });
 
-    /***********************
-     * RÉSULTAT
-     ***********************/
     function showResult(payload) {
       document.getElementById("loading").classList.add("hidden");
 
@@ -696,4 +718,3 @@ paceDiv2?.addEventListener("change", () => {
 
 </body>
 </html>
-
