@@ -179,3 +179,4 @@ window.DATA_VOYAGE = {
     "Château emblématique"
   ]
 };
+console.log("dataVoyage.js exécuté ✅", !!window.DATA_VOYAGE, window.DATA_VOYAGE?.activities?.length);
