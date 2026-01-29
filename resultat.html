@@ -38,14 +38,14 @@
 
     input[type="checkbox"] { accent-color: #111; }
 
-    button {
+    body.light button {
       padding: 12px 24px;
       border: none;
       border-radius: 10px;
       font-size: 16px;
       cursor: pointer;
       background: #111;
-      color: white !important; /* on veut que le texte du bouton reste blanc */
+      color: #fff;
       width: 100%;
       max-width: 520px;
       display: block;
@@ -132,6 +132,8 @@
     const intro = document.getElementById("intro");
     const questions = document.getElementById("questions");
 
+    intro.classList.add("hidden");
+    
     function computeTripEndDayFromPaidDays(d) {
   // Hypothèse fixe : départ vendredi 11/09/2026 soir.
   // Jours posés = jours ouvrés (lun..ven) à partir de lundi 14/09/2026.
@@ -163,15 +165,24 @@ function computeEndDate() {
         <p>Voyage ${computeEndDate()}.</p>
         <p>Je te garde 100% de surprise… mais tu auras quelques indices d’ici là 😉</p>
       `;
-    } else if (controle === "B") {
-      const endDay = computeTripEndDayFromPaidDays(duree);
-      const totalDays = computeTripTotalDays(duree);
-      
-      intro.innerHTML = `
-        <h1>💛 Confiance</h1>
-        <p><strong>${computeEndDate()} 2026</strong></p>
-        <p>Tu poses <strong>${duree} jour${duree > 1 ? "s" : ""}</strong>, et je te prépare un séjour fantastique de <strong>${totalDays} jours</strong> (week-ends inclus) ✨ à partir du ${startDate}.</p>
-      `;
+   } else if (controle === "B") {
+  // Effet waouh : on montre le loader avant l'intro
+  document.getElementById("loading").classList.remove("hidden");
+
+  setTimeout(() => {
+    const endDay = computeTripEndDayFromPaidDays(duree);
+    const totalDays = computeTripTotalDays(duree);
+
+    document.getElementById("loading").classList.add("hidden");
+    intro.classList.remove("hidden");
+
+    intro.innerHTML = `
+      <h1>💛 Confiance</h1>
+      <p><strong>${computeEndDate()} 2026</strong></p>
+      <p>Tu poses <strong>${duree} jour${duree > 1 ? "s" : ""}</strong>, et je te prépare un séjour fantastique de <strong>${totalDays} jours</strong> (week-ends inclus) ✨ à partir du ${startDate}.</p>
+    `;
+  }, 5500);
+
     } else {
       intro.innerHTML = `
         <h1>On construit ton voyage</h1>
