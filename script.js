@@ -1,6 +1,8 @@
 function playConfetti(durationMs = 1200) {
   const canvas = document.getElementById("confettiCanvas");
-  if (!canvas) return;
+  if (!canvas) {
+    console.warn("confettiCanvas introuvable");
+    return;
 
   const ctx = canvas.getContext("2d");
   const dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -15,7 +17,7 @@ function playConfetti(durationMs = 1200) {
   const H = () => canvas.height;
 
   const pieces = [];
-  const count = 140; // quantité confetti
+  const count = 160; // quantité confetti
 
   for (let i = 0; i < count; i++) {
     pieces.push({
@@ -33,7 +35,7 @@ function playConfetti(durationMs = 1200) {
     });
   }
 
-  let start = performance.now();
+  const start = performance.now();
   function frame(t) {
     const elapsed = t - start;
     ctx.clearRect(0, 0, W(), H());
