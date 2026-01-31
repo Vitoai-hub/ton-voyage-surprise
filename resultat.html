@@ -129,6 +129,88 @@
   inset:0;
   background: linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.35));
 }
+/* --- Mode B : teaser --- */
+.teaser {
+  display: grid;
+  gap: 14px;
+}
+
+.heroB {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #eee;
+  box-shadow: 0 18px 50px rgba(0,0,0,.12);
+}
+
+.heroB img {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.02);
+}
+
+.heroB::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.40));
+}
+
+.heroB .tag {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  z-index: 2;
+  background: rgba(255,255,255,.86);
+  color: #111;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Waouh soft : apparition progressive */
+.revealLine {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 520ms ease, transform 520ms ease;
+}
+.revealLine.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.spark {
+  display:inline-block;
+  margin-left: 6px;
+  animation: sparkle 1.2s ease-in-out infinite;
+}
+@keyframes sparkle{
+  0%,100%{ transform: translateY(0); opacity:.65; }
+  50%{ transform: translateY(-2px); opacity:1; }
+}
+
+/* Petit encart “bulletpoints” */
+.keyPoints {
+  background: rgba(0,0,0,.04);
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.keyPoints ul{
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+.keyPoints li{
+  margin: 6px 0;
+}
+
+/* Bonus : style dates */
+.datesLine{
+  font-weight: 800;
+}
 
   </style>
 </head>
@@ -356,7 +438,53 @@ function renderTicketHero(){
 
       refresh();
     }
+      function getTeaserText(mode){
+  const map = {
+    chill_premium: {
+      lead: "Je m’occupe de tout. Toi, tu n’as qu’à te laisser porter.",
+      bullets: [
+        "Rythme doux, zéro galère",
+        "Des moments “wow” sans courir",
+        "Confort + petites attentions"
+      ],
+      outro: "Tu vas rentrer reposée… mais avec la tête pleine d’images."
+    },
+    chill_roots: {
+      lead: "Je te prépare un voyage simple, vrai, et ultra mémorable.",
+      bullets: [
+        "Authentique, spontané, libre",
+        "De belles découvertes sans surcharger",
+        "Des pépites locales au fil du voyage"
+      ],
+      outro: "Un voyage qui fait du bien, sans forcer."
+    },
+    adventure_comfort: {
+      lead: "On part pour une aventure… mais avec du confort quand il faut.",
+      bullets: [
+        "Journées bien remplies (mais logiques)",
+        "Récompense le soir : cosy, bon, calme",
+        "Un ou deux “gros moments” qui marquent"
+      ],
+      outro: "Le combo parfait : bouger + savourer."
+    },
+    adventure_pure: {
+      lead: "Je te prépare un voyage qui bouge. Beaucoup.",
+      bullets: [
+        "Exploration, défis, surprises",
+        "Des journées qui claquent",
+        "La sensation d’avoir vécu 3 voyages en 1"
+      ],
+      outro: "Tu vas adorer… et tu vas t’en souvenir longtemps."
+    }
+  };
+  return map[mode] || map.chill_roots;
+}
 
+function revealSequence(ids, delay=520){
+  ids.forEach((id, i) => {
+    setTimeout(() => document.getElementById(id)?.classList.add("show"), i * delay);
+  });
+}
     /***********************
      * PARAMÈTRES
      ***********************/
@@ -439,22 +567,64 @@ function renderTicketHero(){
       `;
     }
 
-    else if (controle === "B") {
-      document.getElementById("loading").classList.remove("hidden");
+    } else if (controle === "B") {
+  // Waouh soft : loader court + reveal progressif
+  document.getElementById("loading").classList.remove("hidden");
 
-      setTimeout(() => {
-        const totalDays = computeTripTotalDays(duree);
+  setTimeout(() => {
+    const totalDays = computeTripTotalDays(duree);
+    const mode = getMode(intensity, comfort);
+    const teaser = getTeaserText(mode);
 
-        document.getElementById("loading").classList.add("hidden");
-        intro.classList.remove("hidden");
+    document.getElementById("loading").classList.add("hidden");
+    intro.classList.remove("hidden");
 
-        intro.innerHTML = `
-          <h1>💛 Confiance</h1>
-          <p><strong>${computeEndDate()} 2026</strong></p>
-          <p>Tu poses <strong>${duree} jour${duree > 1 ? "s" : ""}</strong>,
-             et je te prépare un séjour fantastique de <strong>${totalDays} jours</strong> (week-ends inclus) ✨ à partir du ${startDate}.</p>
-        `;
-      }, 5500);
+    intro.innerHTML = `
+      <div class="teaser">
+        <h1>💛 Confiance</h1>
+
+        <p class="datesLine revealLine" id="b1">
+          <strong>${computeEndDate()} 2026</strong>
+        </p>
+
+        <div class="heroB revealLine" id="b2">
+          <img src="./assets/img/billet-avion.png" alt="Billet - Voyage surprise" loading="eager"
+               onerror="this.style.display='none'">
+          <div class="tag">Voyage surprise<span class="spark">✈️</span></div>
+        </div>
+
+        <p class="revealLine" id="b3">
+          Tu poses <strong>${duree} jour${duree > 1 ? "s" : ""}</strong>, et je te prépare un séjour de
+          <strong>${totalDays} jours</strong> (week-ends inclus).
+        </p>
+
+        <p class="revealLine" id="b4">${teaser.lead}</p>
+
+        <div class="heroB revealLine" id="b5">
+          <img src="./assets/img/ambiance.png" alt="Ambiance du voyage" loading="lazy"
+               onerror="this.style.display='none'">
+          <div class="tag">Teaser d’ambiance ✨</div>
+        </div>
+
+        <div class="keyPoints revealLine" id="b6">
+          <strong>Ce que tu peux attendre :</strong>
+          <ul>
+            ${teaser.bullets.map(x => `<li>${x}</li>`).join("")}
+          </ul>
+        </div>
+
+        <p class="revealLine" id="b7">${teaser.outro}</p>
+
+        <p class="revealLine" id="b8" style="opacity:.9;">
+          D’ici le départ, tu auras quelques indices pour te préparer… juste ce qu’il faut 😏
+        </p>
+      </div>
+    `;
+
+    // reveal (effet waouh)
+    revealSequence(["b1","b2","b3","b4","b5","b6","b7","b8"], 420);
+  }, 1300); // loader court: plus classy que 5,5s pour le mode B
+
 
     } else {
       intro.classList.remove("hidden");
