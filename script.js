@@ -3,7 +3,7 @@ function playConfetti(durationMs = 1200) {
   if (!canvas) {
     console.warn("confettiCanvas introuvable");
     return;
-
+  }
   const ctx = canvas.getContext("2d");
   const dpr = Math.max(1, window.devicePixelRatio || 1);
 
