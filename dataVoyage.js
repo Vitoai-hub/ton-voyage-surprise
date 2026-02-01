@@ -30,7 +30,10 @@ window.DATA_VOYAGE = {
     "Croatie",
     "Roumanie",
     "Bosnie",
-    "Allemagne"
+    "Allemagne",
+    "Pologne",
+    "Suisse",
+    "Serbie"
   ],
 
   activities: [
