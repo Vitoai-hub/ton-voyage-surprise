@@ -134,15 +134,15 @@ window.DATA_VOYAGE = {
       }
     },
     {
-      id: "roadtrip_routes",
-      label: "Road-trip / routes mythiques",
-      examples: "routes panoramiques, arrêts photo",
+      id: "public_transport_routes",
+      label: "Trains insolites / trajets mythiques",
+      examples: "trains, bus, ferries, funiculaires",
       phrases: {
-        chill_premium: "Route panoramique avec arrêts “photo + café”, zéro stress.",
-        chill_roots: "On roule et on s’arrête quand ça nous plaît : liberté totale.",
-        adventure_comfort: "Plusieurs spots dans la journée, mais bien optimisés (et confort le soir).",
-        adventure_pure: "Journée itinérante bien chargée : kilomètres + points de vue + surprises."
-      }
+        chill_premium: "Un trajet panoramique en train + pauses “photo/café” sans se presser.",
+    chill_roots: "On se laisse porter : train/bus local, petites gares, arrêts coups de cœur.",
+    adventure_comfort: "Journée multi-étapes optimisée en train/bus, avec un vrai spot “wow”.",
+    adventure_pure: "Mode interrail : enchaînement de trajets et d’étapes, rythme soutenu (zéro voiture)."
+  }
     },
     {
       id: "romantic_wow",
