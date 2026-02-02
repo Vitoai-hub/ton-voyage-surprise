@@ -9,13 +9,21 @@ function playConfetti(durationMs = 1200) {
   const dpr = Math.max(1, window.devicePixelRatio || 1);
 
   function resize() {
+    // taille CSS (viewport)
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+
+    // taille réelle (pixels)
     canvas.width = Math.floor(window.innerWidth * dpr);
     canvas.height = Math.floor(window.innerHeight * dpr);
+
+    // dessiner en "pixels CSS"
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   resize();
 
-  const W = () => canvas.width;
-  const H = () => canvas.height;
+  const W = () => window.innerWidth;
+  const H = () => window.innerHeight;
 
   const pieces = [];
   const count = 160;
@@ -24,11 +32,11 @@ function playConfetti(durationMs = 1200) {
     pieces.push({
       x: Math.random() * W(),
       y: -Math.random() * H() * 0.3,
-      r: (3 + Math.random() * 6) * dpr,
-      vx: (-2 + Math.random() * 4) * dpr,
-      vy: (3 + Math.random() * 6) * dpr,
+      r: 3 + Math.random() * 6,
+      vx: -2 + Math.random() * 4,
+      vy: 3 + Math.random() * 6,
       rot: Math.random() * Math.PI,
-      vrot: (-0.2 + Math.random() * 0.4),
+      vrot: -0.2 + Math.random() * 0.4,
       shape: Math.random() < 0.5 ? "rect" : "circle",
       hue: Math.floor(Math.random() * 360),
       alpha: 0.9
@@ -44,11 +52,11 @@ function playConfetti(durationMs = 1200) {
     for (const p of pieces) {
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.05 * dpr;
+      p.vy += 0.05;
       p.rot += p.vrot;
 
-      if (p.x < -20 * dpr) p.x = W() + 20 * dpr;
-      if (p.x > W() + 20 * dpr) p.x = -20 * dpr;
+      if (p.x < -20) p.x = W() + 20;
+      if (p.x > W() + 20) p.x = -20;
 
       ctx.save();
       ctx.translate(p.x, p.y);
@@ -66,43 +74,10 @@ function playConfetti(durationMs = 1200) {
       ctx.restore();
     }
 
-    if (elapsed < durationMs) {
-      requestAnimationFrame(frame);
-    } else {
-      ctx.clearRect(0, 0, W(), H());
-    }
+    if (elapsed < durationMs) requestAnimationFrame(frame);
+    else ctx.clearRect(0, 0, W(), H());
   }
 
   requestAnimationFrame(frame);
-
-  window.addEventListener("resize", () => resize(), { once: true });
-}
-
-function fabrication() {
-  const controle = document.getElementById("controle").value;
-  const duree = document.getElementById("duree").value;
-  const intensity = document.getElementById("intensity").value;
-  const comfort = document.getElementById("comfort").value;
-
-  if (!controle || !duree || !intensity || !comfort) {
-    alert("Choisis une option dans chacun des quatre blocs ✨");
-    return;
-  }
-
-  const mapControle = { "1": "A", "2": "B", "3": "C", "4": "D", "5": "E" };
-  const controleLetter = mapControle[controle] || controle;
-
-  localStorage.setItem("controle", controleLetter);
-  localStorage.setItem("duree", String(duree));
-  localStorage.setItem("intensity", String(intensity));
-  localStorage.setItem("comfort", String(comfort));
-
-  if (controleLetter === "A") {
-    playConfetti(1300);
-    setTimeout(() => {
-      window.location.href = "resultat.html";
-    }, 650);
-  } else {
-    window.location.href = "resultat.html";
-  }
+  window.addEventListener("resize", resize, { once: true });
 }
