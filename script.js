@@ -1,4 +1,4 @@
-function playConfetti(durationMs = 1200) {
+function playConfetti(durationMs = 1400) {
   const canvas = document.getElementById("confettiCanvas");
   if (!canvas) {
     console.warn("confettiCanvas introuvable");
