@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Ton voyage surprise</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <h1>Ton voyage surprise</h1>
-<div class="footer-note">
-  Choisis ce qui te ressemble aujourd’hui. Ensuite… clique sur <b>Fabrication du voyage</b>.
-</div>
+  <div class="footer-note">
+    Choisis ce qui te ressemble aujourd’hui. Ensuite… clique sur <b>Fabrication du voyage</b>.
+  </div>
 
   <div class="grid">
 
@@ -24,7 +25,6 @@
         <option value="D">D</option>
         <option value="E">E</option>
       </select>
-
     </div>
 
     <div class="card">
@@ -67,14 +67,13 @@
 
   </div>
 
-  <button onclick="fabrication()">Fabrication du voyage</button>
+  <button id="btnFabrication" type="button">Fabrication du voyage</button>
 
-   <canvas id="confettiCanvas" style="
+  <canvas id="confettiCanvas" style="
       position:fixed; inset:0; width:100vw; height:100vh;
       pointer-events:none; z-index:9999;
     "></canvas>
-  
+
   <script src="script.js"></script>
 </body>
 </html>
-
