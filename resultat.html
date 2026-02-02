@@ -197,6 +197,64 @@
     .keyPoints li{ margin: 6px 0; }
 
     .datesLine{ font-weight: 800; }
+
+    /* RESULT CARDS (C/D/E) */
+    .cardsWrap{
+      display:grid;
+      gap:14px;
+    }
+    @media(min-width: 880px){
+      .cardsWrap{
+        grid-template-columns: repeat(3, 1fr);
+        align-items: stretch;
+      }
+    }
+    .miniCard{
+      border-radius: 16px;
+      overflow:hidden;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 16px 44px rgba(0,0,0,.08);
+      display:flex;
+      flex-direction: column;
+      min-height: 260px;
+    }
+    .miniCard .img{
+      height: 140px;
+      position: relative;
+      background: #eee;
+    }
+    .miniCard .img img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+    }
+    .miniCard .content{
+      padding: 14px 14px 16px;
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: .2px;
+      background: rgba(0,0,0,.05);
+      border: 1px solid rgba(0,0,0,.06);
+      padding: 6px 10px;
+      border-radius: 999px;
+      width: fit-content;
+    }
+    .content ul{
+      margin: 0;
+      padding-left: 18px;
+    }
+    .content li{ margin: 6px 0; }
+    .muted{ opacity: .82; }
   </style>
 </head>
 
@@ -209,7 +267,7 @@
   <div id="questions" class="section hidden">
     <h2>On construit ton voyage</h2>
 
-    <!-- ACTIVITÉS -->
+    <!-- 1) ACTIVITÉS -->
     <div class="step" id="stepActivities">
       <h3>Ce qui te fait envie</h3>
       <p id="activitiesCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
@@ -221,7 +279,7 @@
       </div>
     </div>
 
-    <!-- PAYS -->
+    <!-- 2) PAYS QUI TENTENT -->
     <div class="step" id="stepCountries">
       <hr style="margin:18px 0; opacity:.2">
       <h3>Pays qui te tentent</h3>
@@ -234,7 +292,21 @@
       </div>
     </div>
 
-    <!-- INSOLITE -->
+    <!-- 3) PAYS QUI NE TENTENT PAS (C/D/E) -->
+    <div class="step" id="stepAvoidEarly">
+      <hr style="margin:18px 0; opacity:.2">
+      <h3>Pays qui ne te tentent pas</h3>
+      <p class="muted" style="margin: 6px 0 10px;">(optionnel — ça m’aide à éviter les fausses pistes)</p>
+      <p id="avoidEarlyCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
+      <p id="avoidEarlyHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
+      <div id="avoidEarly" class="choices"></div>
+
+      <div class="nextRow">
+        <button type="button" class="nextBtn" id="nextAvoidEarly">Suivant</button>
+      </div>
+    </div>
+
+    <!-- 4) INSOLITE -->
     <div class="step" id="stepInsolite">
       <hr style="margin:18px 0; opacity:.2">
       <h3>Une activité insolite</h3>
@@ -258,7 +330,7 @@
 
       <div class="step" id="stepTransport">
         <hr style="margin:18px 0; opacity:.2">
-        <h3>Moyen(s) de transport que tu aimerais emprunter</h3>
+        <h3>Transports en commun que tu aimerais emprunter</h3>
         <p id="transportCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
         <p id="transportHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
         <div id="transport" class="choices"></div>
@@ -269,20 +341,8 @@
       </div>
     </div>
 
-    <!-- Bloc E -->
+    <!-- Bloc E (pace only) -->
     <div id="blockE" class="hidden">
-      <div class="step" id="stepAvoid">
-        <hr style="margin:18px 0; opacity:.2">
-        <h3>Pays que tu n’as pas envie de faire pendant CE voyage</h3>
-        <p id="avoidCounter" style="margin: 6px 0 10px; opacity: 0.8;"></p>
-        <p id="avoidHint" style="margin: 0 0 14px; color: #b00020; font-weight: 600;"></p>
-        <div id="avoidCountries" class="choices"></div>
-
-        <div class="nextRow">
-          <button type="button" class="nextBtn" id="nextAvoid">Suivant</button>
-        </div>
-      </div>
-
       <div class="step" id="stepPace">
         <hr style="margin:18px 0; opacity:.2">
         <h3>Ton rythme idéal</h3>
@@ -482,11 +542,12 @@
       "Roumanie": ["Bucarest", "Brașov", "Oradea", "Timisoara"]
     };
 
+    // Transports sans voiture
     const TRANSPORT_CHOICES = [
-      { id: "plane", label: "✈️ Avion" },
       { id: "train", label: "🚆 Train" },
-      { id: "car", label: "🚗 Voiture / road-trip" },
-      { id: "boat", label: "⛵ Bateau" },
+      { id: "bus", label: "🚌 Bus" },
+      { id: "ferry", label: "⛴️ Ferry / bateau" },
+      { id: "funicular", label: "🚠 Funiculaire / panoramique" },
       { id: "bike", label: "🚲 Vélo" }
     ];
 
@@ -495,6 +556,11 @@
       { id: "balanced", label: "✨ Équilibré : visite + détente" },
       { id: "packed", label: "🔥 Dense : on optimise à fond" }
     ];
+
+    /***********************
+     * PAYS “zone élargie” pour la question “ne te tente pas”
+     ***********************/
+    const EXTRA_AVOID_COUNTRIES = ["Monténégro", "Serbie", "Suisse"];
 
     /***********************
      * DATES (2026)
@@ -540,7 +606,6 @@
       `;
 
     } else if (controle === "B") {
-      // Waouh soft : loader court + reveal progressif
       loading.classList.remove("hidden");
 
       setTimeout(() => {
@@ -624,20 +689,20 @@
     if (!window.DATA_VOYAGE || !Array.isArray(window.DATA_VOYAGE.activities)) {
       activitiesDiv.innerHTML = "<p>Erreur : dataVoyage.js n'est pas chargé.</p>";
       console.error("DATA_VOYAGE introuvable.");
-      return; // STOP propre : évite que tout le reste plante
+      return;
     }
 
     /***********************
      * REMPLISSAGE DES CHOIX
      ***********************/
-    // ACTIVITÉS
+    // 1) ACTIVITÉS
     window.DATA_VOYAGE.activities.forEach(act => {
       const el = document.createElement("label");
       el.innerHTML = `<input type="checkbox" value="${act.id}"> ${act.label}`;
       activitiesDiv.appendChild(el);
     });
 
-    // PAYS
+    // 2) PAYS QUI TENTENT
     const countriesDiv = document.getElementById("countries");
     window.DATA_VOYAGE.countries.forEach((name) => {
       const el = document.createElement("label");
@@ -645,7 +710,16 @@
       countriesDiv.appendChild(el);
     });
 
-    // INSOLITE
+    // 3) PAYS QUI NE TENTENT PAS (liste élargie)
+    const avoidEarlyDiv = document.getElementById("avoidEarly");
+    const avoidEarlyAll = [...new Set([...(window.DATA_VOYAGE.countries || []), ...EXTRA_AVOID_COUNTRIES])];
+    avoidEarlyAll.forEach((name) => {
+      const el = document.createElement("label");
+      el.innerHTML = `<input type="checkbox" value="${name}"> ${name}`;
+      avoidEarlyDiv.appendChild(el);
+    });
+
+    // 4) INSOLITE
     const insoliteDiv = document.getElementById("insolite");
     window.DATA_VOYAGE.insoliteChoices.forEach((label) => {
       const el = document.createElement("label");
@@ -653,7 +727,7 @@
       insoliteDiv.appendChild(el);
     });
 
-    // TRANSPORT
+    // TRANSPORT (D/E)
     const transportDiv = document.getElementById("transport");
     TRANSPORT_CHOICES.forEach((x) => {
       const el = document.createElement("label");
@@ -661,15 +735,7 @@
       transportDiv.appendChild(el);
     });
 
-    // A ÉVITER
-    const avoidDiv = document.getElementById("avoidCountries");
-    window.DATA_VOYAGE.countries.forEach((name) => {
-      const el = document.createElement("label");
-      el.innerHTML = `<input type="checkbox" value="${name}"> ${name}`;
-      avoidDiv.appendChild(el);
-    });
-
-    // PACE
+    // PACE (E)
     const paceDiv = document.getElementById("pace");
     PACE_CHOICES.forEach((x) => {
       const el = document.createElement("label");
@@ -714,7 +780,6 @@
     countriesDiv.addEventListener("change", () => {
       buildCitiesForSelectedCountries();
     });
-
     buildCitiesForSelectedCountries();
 
     /***********************
@@ -724,13 +789,13 @@
     const maxCountries = getMaxCountriesByDuration(duree);
     const maxCities = getMaxCitiesByDuration(duree);
     const maxTransport = getMaxTransportByDuration(duree);
-    const maxAvoid = getMaxAvoidCountriesByDuration(duree);
+    const maxAvoidEarly = getMaxAvoidCountriesByDuration(duree);
 
     enforceMaxCheckbox("#activities", maxActivities, document.getElementById("activitiesHint"));
     enforceMaxCheckbox("#countries", maxCountries, document.getElementById("countriesHint"));
     enforceMaxCheckbox("#cities", maxCities, document.getElementById("citiesHint"));
     enforceMaxCheckbox("#transport", maxTransport, document.getElementById("transportHint"));
-    enforceMaxCheckbox("#avoidCountries", maxAvoid, document.getElementById("avoidHint"));
+    enforceMaxCheckbox("#avoidEarly", maxAvoidEarly, document.getElementById("avoidEarlyHint"));
 
     /***********************
      * PROGRESSION
@@ -751,11 +816,24 @@
       containerSelector: "#countries",
       max: maxCountries,
       nextButtonId: "nextCountries",
-      nextStepId: "stepInsolite",
+      nextStepId: "stepAvoidEarly",
       counterEl: document.getElementById("countriesCounter"),
       hintEl: document.getElementById("countriesHint"),
       label: "Pays sélectionnés"
     });
+
+    // Avoid early -> Insolite (optionnel, on autorise même 0)
+    document.getElementById("nextAvoidEarly")?.addEventListener("click", () => showStep("stepInsolite"));
+    avoidEarlyDiv?.addEventListener("change", () => {
+      updateCounter(
+        document.getElementById("avoidEarlyCounter"),
+        "Pays à éviter",
+        countChecked("#avoidEarly"),
+        maxAvoidEarly
+      );
+    });
+    // init compteur
+    updateCounter(document.getElementById("avoidEarlyCounter"), "Pays à éviter", 0, maxAvoidEarly);
 
     // Insolite (radio) -> suite
     insoliteDiv.addEventListener("change", () => {
@@ -766,6 +844,7 @@
         return;
       }
 
+      // D / E
       buildCitiesForSelectedCountries();
       showStep("stepCities");
     });
@@ -783,10 +862,10 @@
 
     document.getElementById("nextCities")?.addEventListener("click", () => showStep("stepTransport"));
 
-    // Transport -> D => valider / E => avoid
+    // Transport -> D => valider / E => pace
     document.getElementById("nextTransport")?.addEventListener("click", () => {
       if (controle === "D") showStep("stepValidate");
-      if (controle === "E") showStep("stepAvoid");
+      if (controle === "E") showStep("stepPace");
     });
     transportDiv?.addEventListener("change", () => {
       updateCounter(
@@ -797,19 +876,8 @@
       );
       if (countChecked("#transport") >= maxTransport) {
         if (controle === "D") showStep("stepValidate");
-        if (controle === "E") showStep("stepAvoid");
+        if (controle === "E") showStep("stepPace");
       }
-    });
-
-    // Avoid -> Pace (E)
-    document.getElementById("nextAvoid")?.addEventListener("click", () => showStep("stepPace"));
-    avoidDiv?.addEventListener("change", () => {
-      updateCounter(
-        document.getElementById("avoidCounter"),
-        "Pays à éviter",
-        countChecked("#avoidCountries"),
-        maxAvoid
-      );
     });
 
     // Pace -> Valider
@@ -823,12 +891,12 @@
     document.getElementById("validateBtn")?.addEventListener("click", () => {
       const selectedActivities = [...document.querySelectorAll("#activities input:checked")].map(cb => cb.value);
       const selectedCountries  = [...document.querySelectorAll("#countries input:checked")].map(cb => cb.value);
+      const avoidCountries     = [...document.querySelectorAll("#avoidEarly input:checked")].map(cb => cb.value);
       const insolite = document.querySelector("input[name='insolite']:checked")?.value || "";
 
       const selectedCities     = [...document.querySelectorAll("#cities input:checked")].map(cb => cb.value);
       const selectedTransport  = [...document.querySelectorAll("#transport input:checked")].map(cb => cb.value);
 
-      const avoidCountries     = [...document.querySelectorAll("#avoidCountries input:checked")].map(cb => cb.value);
       const pace               = document.querySelector("input[name='pace']:checked")?.value || "";
 
       if (selectedActivities.length === 0) { alert("Choisis au moins une activité 🙂"); return; }
@@ -839,13 +907,19 @@
         alert("Choisis au moins une ville 🙂"); return;
       }
       if ((controle === "D" || controle === "E") && selectedTransport.length === 0) {
-        alert("Choisis au moins un moyen de transport 🙂"); return;
+        alert("Choisis au moins un transport 🙂"); return;
       }
 
-      if (controle === "E") {
-        const conflict = selectedCountries.find(c => avoidCountries.includes(c));
-        if (conflict) { alert(`Tu as choisi et aussi “évité” : ${conflict} 🙂`); return; }
-        if (!pace) { alert("Choisis ton rythme idéal 🙂"); return; }
+      // Evite les contradictions : choisi ET évité (dans avoidEarly)
+      const conflict = selectedCountries.find(c => avoidCountries.includes(c));
+      if (conflict) {
+        alert(`Tu as sélectionné et aussi “évité” : ${conflict} 🙂\nRetire-le d’une des deux listes.`);
+        return;
+      }
+
+      if (controle === "E" && !pace) {
+        alert("Choisis ton rythme idéal 🙂");
+        return;
       }
 
       const mode = getMode(intensity, comfort);
@@ -857,14 +931,14 @@
         showResult({
           activityIds: selectedActivities,
           countries: selectedCountries,
+          avoidCountries,
           insolite,
           cities: selectedCities,
           transport: selectedTransport,
-          avoidCountries,
           pace,
           mode
         });
-      }, 1600);
+      }, 1500);
     });
 
     function showResult(payload) {
@@ -873,7 +947,7 @@
       const result = document.getElementById("result");
       result.classList.remove("hidden");
 
-      const { activityIds, countries, insolite, cities, transport, avoidCountries, pace, mode } = payload;
+      const { activityIds, countries, avoidCountries, insolite, cities, transport, pace, mode } = payload;
 
       const phrases = [];
       activityIds.forEach(id => {
@@ -891,28 +965,58 @@
         ? (PACE_CHOICES.find(x => x.id === pace)?.label || pace)
         : "";
 
-      let html = `
+      const moodLine = getMoodSentence(mode);
+
+      // Résultat "cards" pour C/D/E
+      const cardsHtml = `
         <h2>Ton voyage</h2>
         <p><strong>${computeEndDate()} 2026</strong></p>
 
-        <h3>Grandes étapes</h3>
-        <ul>
-          <li><strong>Pays :</strong> ${countries.join(" → ")}</li>
-          ${(controle === "D" || controle === "E") && cities.length ? `<li><strong>Villes :</strong> ${cities.join(", ")}</li>` : ``}
-          ${(controle === "D" || controle === "E") && transportLabels.length ? `<li><strong>Transport :</strong> ${transportLabels.join(" + ")}</li>` : ``}
-          <li><strong>Insolite :</strong> ${insolite}</li>
-          ${(controle === "E") && avoidCountries.length ? `<li><strong>À éviter :</strong> ${avoidCountries.join(", ")}</li>` : ``}
-          ${(controle === "E") && paceLabel ? `<li><strong>Rythme :</strong> ${paceLabel}</li>` : ``}
-        </ul>
+        <div class="cardsWrap">
+          <div class="miniCard">
+            <div class="img">
+              <img src="./assets/img/depart.png" alt="Départ" loading="eager" onerror="this.style.display='none'">
+            </div>
+            <div class="content">
+              <div class="pill">🧭 Grandes étapes</div>
+              <ul>
+                <li><strong>Pays :</strong> ${countries.join(" → ")}</li>
+                ${(controle === "D" || controle === "E") && cities.length ? `<li><strong>Villes :</strong> ${cities.join(", ")}</li>` : ``}
+                ${(controle === "D" || controle === "E") && transportLabels.length ? `<li><strong>Transport :</strong> ${transportLabels.join(" + ")}</li>` : ``}
+                <li><strong>Insolite :</strong> ${insolite}</li>
+                ${avoidCountries.length ? `<li><strong>À éviter :</strong> ${avoidCountries.join(", ")}</li>` : ``}
+              </ul>
+            </div>
+          </div>
 
-        <h3>Moments clés</h3>
-        <ul>
+          <div class="miniCard">
+            <div class="img">
+              <img src="./assets/img/ambiance_carte.png" alt="Ambiance" loading="lazy" onerror="this.style.display='none'">
+            </div>
+            <div class="content">
+              <div class="pill">✨ Ambiance</div>
+              <div class="muted">${moodLine}</div>
+              ${(controle === "E") && paceLabel ? `<div><strong>Rythme :</strong> ${paceLabel}</div>` : ``}
+              <div class="muted">Je m’occupe de l’équilibre : intensité, confort, et logique des trajets.</div>
+            </div>
+          </div>
+
+          <div class="miniCard">
+            <div class="img">
+              <img src="./assets/img/moment.png" alt="Moments clés" loading="lazy" onerror="this.style.display='none'">
+            </div>
+            <div class="content">
+              <div class="pill">💛 Moments clés</div>
+              <ul>
+                ${phrases.slice(0, maxPhrases).map(p => `<li>${p}</li>`).join("")}
+              </ul>
+              <div class="muted">Tu auras quelques indices avant le départ… juste ce qu’il faut 😏</div>
+            </div>
+          </div>
+        </div>
       `;
 
-      phrases.slice(0, maxPhrases).forEach(p => html += `<li>${p}</li>`);
-      html += `</ul>`;
-
-      result.innerHTML = html;
+      result.innerHTML = cardsHtml;
     }
 
   })();
