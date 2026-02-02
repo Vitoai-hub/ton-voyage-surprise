@@ -81,3 +81,35 @@ function playConfetti(durationMs = 1400) {
   requestAnimationFrame(frame);
   window.addEventListener("resize", resize, { once: true });
 }
+function fabrication() {
+  const controle = document.getElementById("controle")?.value;
+  const duree = document.getElementById("duree")?.value;
+  const intensity = document.getElementById("intensity")?.value;
+  const comfort = document.getElementById("comfort")?.value;
+
+  if (!controle || !duree || !intensity || !comfort) {
+    alert("Choisis une option dans chacun des quatre blocs ✨");
+    return;
+  }
+
+  const mapControle = { "1": "A", "2": "B", "3": "C", "4": "D", "5": "E" };
+  const controleLetter = mapControle[controle] || controle;
+
+  localStorage.setItem("controle", controleLetter);
+  localStorage.setItem("duree", String(duree));
+  localStorage.setItem("intensity", String(intensity));
+  localStorage.setItem("comfort", String(comfort));
+
+  // Confettis plus longs en mode A (tu peux monter à 2200-2600 si tu veux)
+  if (controleLetter === "A") {
+    playConfetti(2200);             // <- durée confettis
+    setTimeout(() => {
+      window.location.href = "resultat.html";
+    }, 900);                         // <- délai avant redirection (laisser le temps de voir)
+  } else {
+    window.location.href = "resultat.html";
+  }
+}
+
+// IMPORTANT : rend la fonction visible pour onclick=""
+window.fabrication = fabrication;
