@@ -137,7 +137,7 @@ window.DATA_VOYAGE = {
       }
     },
     {
-      id: "public_transport_routes",
+      id: "transit_panorama",
       label: "Trains insolites / trajets mythiques",
       examples: "trains, bus, ferries, funiculaires",
       phrases: {
