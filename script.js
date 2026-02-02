@@ -1,36 +1,7 @@
-function fabrication() { 
-  const controle = document.getElementById("controle")?.value;
-  const duree = document.getElementById("duree")?.value;
-  const intensity = document.getElementById("intensity")?.value;
-  const comfort = document.getElementById("comfort")?.value;
-
-  if (!controle || !duree || !intensity || !comfort) {
-    alert("Choisis une option dans chacun des quatre blocs ✨");
-    return;
-  }
-
-  const mapControle = { "1": "A", "2": "B", "3": "C", "4": "D", "5": "E" };
-  const controleLetter = mapControle[controle] || controle;
-
-  localStorage.setItem("controle", controleLetter);
-  localStorage.setItem("duree", String(duree));
-  localStorage.setItem("intensity", String(intensity));
-  localStorage.setItem("comfort", String(comfort));
-
-  // Confettis plus longs en mode A (tu peux monter à 2200-2600 si tu veux)
-  if (controleLetter === "A") {
-    playConfetti(2200);             // <- durée confettis
-    setTimeout(() => {
-      window.location.href = "resultat.html";
-    }, 900);                         // <- délai avant redirection (laisser le temps de voir)
-  } else {
-    window.location.href = "resultat.html";
-  }
-}
-
-// IMPORTANT : rend la fonction visible pour onclick=""
-window.fabrication = fabrication;
-function playConfetti(durationMs = 1400) {
+/* =========================
+   CONFETTI
+   ========================= */
+function playConfetti(durationMs = 1800) {
   const canvas = document.getElementById("confettiCanvas");
   if (!canvas) {
     console.warn("confettiCanvas introuvable");
@@ -41,15 +12,10 @@ function playConfetti(durationMs = 1400) {
   const dpr = Math.max(1, window.devicePixelRatio || 1);
 
   function resize() {
-    // taille CSS (viewport)
     canvas.style.width = "100vw";
     canvas.style.height = "100vh";
-
-    // taille réelle (pixels)
     canvas.width = Math.floor(window.innerWidth * dpr);
     canvas.height = Math.floor(window.innerHeight * dpr);
-
-    // dessiner en "pixels CSS"
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   resize();
@@ -58,7 +24,7 @@ function playConfetti(durationMs = 1400) {
   const H = () => window.innerHeight;
 
   const pieces = [];
-  const count = 160;
+  const count = 180;
 
   for (let i = 0; i < count; i++) {
     pieces.push({
@@ -114,3 +80,49 @@ function playConfetti(durationMs = 1400) {
   window.addEventListener("resize", resize, { once: true });
 }
 
+/* =========================
+   FABRICATION (LOGIQUE)
+   ========================= */
+function fabrication() {
+  const controle = document.getElementById("controle")?.value || "";
+  const duree = document.getElementById("duree")?.value || "";
+  const intensity = document.getElementById("intensity")?.value || "";
+  const comfort = document.getElementById("comfort")?.value || "";
+
+  if (!controle || !duree || !intensity || !comfort) {
+    alert("Choisis une option dans chacun des quatre blocs ✨");
+    return;
+  }
+
+  // Stockage pour resultat.html
+  localStorage.setItem("controle", controle);
+  localStorage.setItem("duree", String(duree));
+  localStorage.setItem("intensity", String(intensity));
+  localStorage.setItem("comfort", String(comfort));
+
+  // Mode A => confettis plus long + délai avant redirection
+  if (controle === "A") {
+    playConfetti(2600); // <- plus long
+    setTimeout(() => {
+      window.location.href = "resultat.html";
+    }, 900);
+  } else {
+    window.location.href = "resultat.html";
+  }
+}
+
+/* =========================
+   BRANCHEMENT EVENT (SAFE)
+   ========================= */
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("btnFabrication");
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    fabrication();
+  });
+});
+
+// Bonus : au cas où tu as encore un onclick dans une vieille version,
+// on expose fabrication en global explicitement.
+window.fabrication = fabrication;
