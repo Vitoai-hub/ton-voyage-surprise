@@ -81,7 +81,7 @@ function playConfetti(durationMs = 1400) {
   requestAnimationFrame(frame);
   window.addEventListener("resize", resize, { once: true });
 }
-function fabrication() {
+function fabrication() { 
   const controle = document.getElementById("controle")?.value;
   const duree = document.getElementById("duree")?.value;
   const intensity = document.getElementById("intensity")?.value;
