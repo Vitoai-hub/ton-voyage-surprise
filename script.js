@@ -127,4 +127,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Bonus : au cas où tu as encore un onclick dans une vieille version,
 // on expose fabrication en global explicitement.
-window.fabrication = fabrication;
+window.fabrication = fabrication; 
